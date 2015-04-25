@@ -14,6 +14,9 @@
             : base(parentPropertyPage)
         {
             InitializeComponent();
+            cmdDebugAgent.Items.Clear();
+            cmdDebugAgent.Items.Add(DebugAgent.CustomJvmti);
+            cmdDebugAgent.Items.Add(DebugAgent.Jdwp);
             UpdateStates();
             RefreshCommandLine();
         }
@@ -157,6 +160,19 @@
             }
         }
 
+        public DebugAgent DebugAgent
+        {
+            get
+            {
+                return (DebugAgent)(cmdDebugAgent.SelectedItem ?? DebugAgent.CustomJvmti);
+            }
+
+            set
+            {
+                cmdDebugAgent.SelectedItem = value;
+            }
+        }
+
         public string VirtualMachineArguments
         {
             get
@@ -195,7 +211,17 @@
                 string javaPath = projectConfig != null ? projectConfig.FindJavaBinary("java.exe", true) : null;
                 commandLine.AppendFileNameIfNotNull(javaPath);
 
-                commandLine.AppendSwitch("-agentpath:{AgentPath}");
+                string agentSwitch;
+                if (DebugAgent == DebugAgent.Jdwp)
+                {
+                    agentSwitch = "-Xrunjdwp:transport=dt_socket,server=y,address=6777";
+                }
+                else
+                {
+                    agentSwitch = "-agentpath:{AgentPath}";
+                }
+
+                commandLine.AppendSwitch(agentSwitch);
                 if (!string.IsNullOrEmpty(AgentArguments))
                     commandLine.AppendTextUnquoted("=" + AgentArguments);
 

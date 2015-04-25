@@ -45,6 +45,13 @@
             PropertyPagePanel.UseRemoteMachine = GetConfigPropertyBoolean(JavaConfigConstants.DebugUseRemoteMachine, _PersistStorageType.PST_USER_FILE);
             PropertyPagePanel.RemoteMachineName = GetConfigProperty(JavaConfigConstants.DebugRemoteMachineName, _PersistStorageType.PST_USER_FILE);
 
+            string debugAgentName = GetConfigProperty(JavaConfigConstants.DebugAgent, _PersistStorageType.PST_USER_FILE);
+            DebugAgent debugAgent;
+            if (!Enum.TryParse(debugAgentName, out debugAgent))
+                debugAgent = DebugAgent.CustomJvmti;
+
+            PropertyPagePanel.DebugAgent = debugAgent;
+
             PropertyPagePanel.VirtualMachineArguments = GetConfigProperty(JavaConfigConstants.DebugJvmArguments, _PersistStorageType.PST_USER_FILE);
             PropertyPagePanel.AgentArguments = GetConfigProperty(JavaConfigConstants.DebugAgentArguments, _PersistStorageType.PST_USER_FILE);
         }
@@ -60,6 +67,7 @@
             SetConfigProperty(JavaConfigConstants.DebugWorkingDirectory, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.WorkingDirectory);
             SetConfigProperty(JavaConfigConstants.DebugUseRemoteMachine, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.UseRemoteMachine);
             SetConfigProperty(JavaConfigConstants.DebugRemoteMachineName, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.RemoteMachineName);
+            SetConfigProperty(JavaConfigConstants.DebugAgent, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.DebugAgent.ToString());
 
             SetConfigProperty(JavaConfigConstants.DebugJvmArguments, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.VirtualMachineArguments);
             SetConfigProperty(JavaConfigConstants.DebugAgentArguments, _PersistStorageType.PST_USER_FILE, PropertyPagePanel.AgentArguments);

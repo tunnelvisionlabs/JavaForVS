@@ -33,6 +33,7 @@
             System.Windows.Forms.GroupBox groupBox2;
             System.Windows.Forms.Label label1;
             System.Windows.Forms.Label label5;
+            this.cmdDebugAgent = new System.Windows.Forms.ComboBox();
             this.txtRemoteMachine = new System.Windows.Forms.TextBox();
             this.chkUseRemoteMachine = new System.Windows.Forms.CheckBox();
             this.btnBrowseWorkingDirectory = new System.Windows.Forms.Button();
@@ -48,8 +49,8 @@
             this.txtStartClass = new System.Windows.Forms.TextBox();
             this.txtCommandLine = new System.Windows.Forms.TextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.txtJvmArguments = new System.Windows.Forms.TextBox();
             this.txtAgentArguments = new System.Windows.Forms.TextBox();
+            this.txtJvmArguments = new System.Windows.Forms.TextBox();
             label3 = new System.Windows.Forms.Label();
             label2 = new System.Windows.Forms.Label();
             groupBox2 = new System.Windows.Forms.GroupBox();
@@ -72,16 +73,17 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new System.Drawing.Point(39, 22);
+            label2.Location = new System.Drawing.Point(39, 160);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(128, 13);
+            label2.Size = new System.Drawing.Size(72, 13);
             label2.TabIndex = 0;
-            label2.Text = "Command line arguments:";
+            label2.Text = "Debug agent:";
             // 
             // groupBox2
             // 
             groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            groupBox2.Controls.Add(this.cmdDebugAgent);
             groupBox2.Controls.Add(this.txtRemoteMachine);
             groupBox2.Controls.Add(this.chkUseRemoteMachine);
             groupBox2.Controls.Add(this.btnBrowseWorkingDirectory);
@@ -91,10 +93,23 @@
             groupBox2.Controls.Add(label2);
             groupBox2.Location = new System.Drawing.Point(3, 112);
             groupBox2.Name = "groupBox2";
-            groupBox2.Size = new System.Drawing.Size(553, 159);
+            groupBox2.Size = new System.Drawing.Size(553, 193);
             groupBox2.TabIndex = 1;
             groupBox2.TabStop = false;
             groupBox2.Text = "Start Options";
+            // 
+            // cmdDebugAgent
+            // 
+            this.cmdDebugAgent.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmdDebugAgent.FormattingEnabled = true;
+            this.cmdDebugAgent.Items.AddRange(new object[] {
+            "High-performance debug agent (default)",
+            "JDWP debugging (compatibility mode)"});
+            this.cmdDebugAgent.Location = new System.Drawing.Point(190, 157);
+            this.cmdDebugAgent.Name = "cmdDebugAgent";
+            this.cmdDebugAgent.Size = new System.Drawing.Size(318, 21);
+            this.cmdDebugAgent.TabIndex = 7;
+            this.cmdDebugAgent.SelectedValueChanged += new System.EventHandler(this.HandleStateAffectingChange);
             // 
             // txtRemoteMachine
             // 
@@ -158,6 +173,15 @@
             label1.Size = new System.Drawing.Size(134, 13);
             label1.TabIndex = 0;
             label1.Text = "Virtual machine arguments:";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new System.Drawing.Point(39, 108);
+            label5.Name = "label5";
+            label5.Size = new System.Drawing.Size(90, 13);
+            label5.TabIndex = 0;
+            label5.Text = "Agent arguments:";
             // 
             // groupBox1
             // 
@@ -255,30 +279,12 @@
             this.groupBox3.Controls.Add(label5);
             this.groupBox3.Controls.Add(this.txtJvmArguments);
             this.groupBox3.Controls.Add(label1);
-            this.groupBox3.Location = new System.Drawing.Point(3, 277);
+            this.groupBox3.Location = new System.Drawing.Point(3, 311);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(553, 320);
             this.groupBox3.TabIndex = 2;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Java Virtual Machine";
-            // 
-            // txtJvmArguments
-            // 
-            this.txtJvmArguments.Location = new System.Drawing.Point(190, 19);
-            this.txtJvmArguments.Multiline = true;
-            this.txtJvmArguments.Name = "txtJvmArguments";
-            this.txtJvmArguments.Size = new System.Drawing.Size(318, 80);
-            this.txtJvmArguments.TabIndex = 1;
-            this.txtJvmArguments.TextChanged += new System.EventHandler(this.HandleCommandLineAffectingChange);
-            // 
-            // label5
-            // 
-            label5.AutoSize = true;
-            label5.Location = new System.Drawing.Point(39, 108);
-            label5.Name = "label5";
-            label5.Size = new System.Drawing.Size(90, 13);
-            label5.TabIndex = 0;
-            label5.Text = "Agent arguments:";
             // 
             // txtAgentArguments
             // 
@@ -289,6 +295,15 @@
             this.txtAgentArguments.TabIndex = 1;
             this.txtAgentArguments.TextChanged += new System.EventHandler(this.HandleCommandLineAffectingChange);
             // 
+            // txtJvmArguments
+            // 
+            this.txtJvmArguments.Location = new System.Drawing.Point(190, 19);
+            this.txtJvmArguments.Multiline = true;
+            this.txtJvmArguments.Name = "txtJvmArguments";
+            this.txtJvmArguments.Size = new System.Drawing.Size(318, 80);
+            this.txtJvmArguments.TabIndex = 1;
+            this.txtJvmArguments.TextChanged += new System.EventHandler(this.HandleCommandLineAffectingChange);
+            // 
             // JavaDebugPropertyPagePanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -298,7 +313,7 @@
             this.Controls.Add(this.groupBox1);
             this.MinimumSize = new System.Drawing.Size(563, 533);
             this.Name = "JavaDebugPropertyPagePanel";
-            this.Size = new System.Drawing.Size(563, 757);
+            this.Size = new System.Drawing.Size(563, 645);
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -328,5 +343,6 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.TextBox txtJvmArguments;
         private System.Windows.Forms.TextBox txtAgentArguments;
+        private System.Windows.Forms.ComboBox cmdDebugAgent;
     }
 }
