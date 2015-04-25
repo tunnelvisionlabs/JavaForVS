@@ -1,0 +1,17 @@
+# Visual Studio user files and caches
+.vs/
+*.csproj.user
+*.suo
+*.vcxproj.user
+*.sdf
+*.opensdf
+
+# Build folders
+bin/
+obj/
+/Tvl.Java.DebugHostWrapper/Release/
+/Tvl.Java.DebugHostWrapper/x64/
+/Tvl.Java.DebugHostWrapper/Debug/
+
+# NuGet package directory
+packages/
