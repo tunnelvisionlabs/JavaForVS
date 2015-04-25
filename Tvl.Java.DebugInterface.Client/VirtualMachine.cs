@@ -6,6 +6,7 @@
     using System.Collections.ObjectModel;
     using System.Diagnostics.Contracts;
     using System.Linq;
+    using System.Management;
     using System.ServiceModel;
     using Tvl.Java.DebugInterface.Client.DebugProtocol;
     using Tvl.Java.DebugInterface.Client.Events;
@@ -24,6 +25,7 @@
         private readonly EventQueue _eventQueue;
         private readonly EventRequestManager _eventRequestManager;
         private readonly string[] _sourcePaths;
+        private readonly bool _jdwp;
 
         private EventWaitHandle _ipcHandle;
         private DebugProtocol.IDebugProtocolService _protocolService;
@@ -40,7 +42,7 @@
 
         private readonly Dictionary<string, IType> _types = new Dictionary<string, IType>();
 
-        public VirtualMachine(string[] sourcePaths)
+        public VirtualMachine(string[] sourcePaths, bool jdwp)
         {
             Contract.Requires<ArgumentNullException>(sourcePaths != null, "sourcePaths");
 
@@ -48,6 +50,7 @@
             _eventRequestManager = new EventRequestManager(this);
             _eventQueue = new EventQueue(this);
             _sourcePaths = sourcePaths;
+            _jdwp = jdwp;
         }
 
         public event EventHandler AttachComplete;
@@ -102,8 +105,25 @@
 
         internal static VirtualMachine BeginAttachToProcess(int processId, string[] sourcePaths)
         {
-            VirtualMachine virtualMachine = new VirtualMachine(sourcePaths);
-            virtualMachine._ipcHandle = new EventWaitHandle(false, EventResetMode.ManualReset, string.Format("JavaDebuggerInitHandle{0}", processId));
+            string wmiQuery = string.Format("select CommandLine from Win32_Process where ProcessId={0}", processId);
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(wmiQuery);
+            ManagementObjectCollection collection = searcher.Get();
+            string commandLine = null;
+            foreach (ManagementObject managementObject in collection)
+            {
+                commandLine = (string)managementObject["CommandLine"];
+                break;
+            }
+
+            bool jdwp = false;
+            if (!string.IsNullOrEmpty(commandLine) && commandLine.IndexOf("-Xrunjdwp:", StringComparison.Ordinal) >= 0)
+                jdwp = true;
+
+            VirtualMachine virtualMachine = new VirtualMachine(sourcePaths, jdwp);
+            if (!jdwp)
+            {
+                virtualMachine._ipcHandle = new EventWaitHandle(false, EventResetMode.ManualReset, string.Format("JavaDebuggerInitHandle{0}", processId));
+            }
 
             Task initializeTask = Task.Factory.StartNew(virtualMachine.InitializeServicesAfterProcessStarts).HandleNonCriticalExceptions();
 
@@ -114,9 +134,12 @@
         {
             try
             {
-                _ipcHandle.WaitOne();
-                _ipcHandle.Dispose();
-                _ipcHandle = null;
+                if (!_jdwp)
+                {
+                    _ipcHandle.WaitOne();
+                    _ipcHandle.Dispose();
+                    _ipcHandle = null;
+                }
 
                 CreateProtocolServiceClient();
                 _protocolService.Attach();
@@ -132,17 +155,25 @@
 
         private void CreateProtocolServiceClient()
         {
-            var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None)
-            {
-                MaxReceivedMessageSize = 10 * 1024 * 1024,
-                ReceiveTimeout = TimeSpan.MaxValue,
-                SendTimeout = TimeSpan.MaxValue
-            };
-
             DebugProtocolCallback callback = new DebugProtocolCallback(this);
-            var callbackInstance = new InstanceContext(callback);
-            var remoteAddress = new EndpointAddress("net.pipe://localhost/Tvl.Java.DebugHost/DebugProtocolService/");
-            _protocolService = new DebugProtocol.DebugProtocolServiceClient(callbackInstance, binding, remoteAddress);
+
+            if (_jdwp)
+            {
+                _protocolService = new Jdwp.JdwpDebugProtocolService(callback);
+            }
+            else
+            {
+                var binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None)
+                {
+                    MaxReceivedMessageSize = 10 * 1024 * 1024,
+                    ReceiveTimeout = TimeSpan.MaxValue,
+                    SendTimeout = TimeSpan.MaxValue
+                };
+
+                var callbackInstance = new InstanceContext(callback);
+                var remoteAddress = new EndpointAddress("net.pipe://localhost/Tvl.Java.DebugHost/DebugProtocolService/");
+                _protocolService = new DebugProtocol.DebugProtocolServiceClient(callbackInstance, binding, remoteAddress);
+            }
         }
 
         #region IVirtualMachine Members

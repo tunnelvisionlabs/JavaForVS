@@ -438,7 +438,7 @@
                 break;
 
             case enum_STEPUNIT.STEP_STATEMENT:
-                size = StepSize.Statement;
+                size = VirtualMachine.GetCanStepByStatement() ? StepSize.Statement : StepSize.Line;
                 break;
 
             default:

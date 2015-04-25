@@ -12,6 +12,7 @@
     using _PersistStorageType = Microsoft.VisualStudio.Shell.Interop._PersistStorageType;
     using CommandLineBuilder = Microsoft.Build.Utilities.CommandLineBuilder;
     using DEBUG_LAUNCH_OPERATION = Microsoft.VisualStudio.Shell.Interop.DEBUG_LAUNCH_OPERATION;
+    using DebugAgent = Tvl.VisualStudio.Language.Java.Project.PropertyPages.DebugAgent;
     using Directory = System.IO.Directory;
     using File = System.IO.File;
     using IVsDebugger2 = Microsoft.VisualStudio.Shell.Interop.IVsDebugger2;
@@ -154,14 +155,28 @@
             if (x64)
                 agentBaseFileName += "X64";
 
-            string agentFolder = Path.GetDirectoryName(typeof(JavaProjectConfig).Assembly.Location);
-            string agentFileName = agentBaseFileName + ".dll";
-            string agentPath = Path.GetFullPath(Path.Combine(agentFolder, agentFileName));
-            commandLine.AppendSwitchIfNotNull("-agentpath:", agentPath);
+            bool useDevelopmentEnvironment = (grfLaunch & (uint)__VSDBGLAUNCHFLAGS.DBGLAUNCH_NoDebug) == 0;
 
-            string agentArguments = GetConfigurationProperty(JavaConfigConstants.DebugAgentArguments, _PersistStorageType.PST_USER_FILE, false);
-            if (!string.IsNullOrEmpty(agentArguments))
-                commandLine.AppendTextUnquoted("=" + agentArguments);
+            string debugAgentName = GetConfigurationProperty(JavaConfigConstants.DebugAgent, _PersistStorageType.PST_USER_FILE, false);
+            bool useJdwp = string.Equals(DebugAgent.Jdwp.ToString(), debugAgentName, StringComparison.OrdinalIgnoreCase);
+
+            if (useJdwp)
+            {
+                commandLine.AppendSwitch("-Xdebug");
+                string serverValue = useDevelopmentEnvironment ? "y" : "n";
+                commandLine.AppendSwitch("-Xrunjdwp:transport=dt_socket,server=" + serverValue + ",address=6777");
+            }
+            else
+            {
+                string agentFolder = Path.GetDirectoryName(typeof(JavaProjectConfig).Assembly.Location);
+                string agentFileName = agentBaseFileName + ".dll";
+                string agentPath = Path.GetFullPath(Path.Combine(agentFolder, agentFileName));
+                commandLine.AppendSwitchIfNotNull("-agentpath:", agentPath);
+
+                string agentArguments = GetConfigurationProperty(JavaConfigConstants.DebugAgentArguments, _PersistStorageType.PST_USER_FILE, false);
+                if (!string.IsNullOrEmpty(agentArguments))
+                    commandLine.AppendTextUnquoted("=" + agentArguments);
+            }
 
             switch (GetConfigurationProperty(JavaConfigConstants.DebugStartAction, _PersistStorageType.PST_USER_FILE, false))
             {
@@ -230,7 +245,6 @@
 
             info.Arguments = commandLine.ToString();
 
-            bool useDevelopmentEnvironment = (grfLaunch & (uint)__VSDBGLAUNCHFLAGS.DBGLAUNCH_NoDebug) == 0;
             info.Executable = FindJavaBinary("java.exe", useDevelopmentEnvironment);
 
             //info.CurrentDirectory = GetConfigurationProperty("WorkingDirectory", false, _PersistStorageType.PST_USER_FILE);
@@ -242,7 +256,8 @@
                     //VSConstants.DebugEnginesGuids.ManagedOnly_guid,
                     //VSConstants.DebugEnginesGuids.NativeOnly_guid,
                 };
-            info.PortSupplier = new Guid("{708C1ECA-FF48-11D2-904F-00C04FA302A1}");
+            Guid localPortSupplier = new Guid("{708C1ECA-FF48-11D2-904F-00C04FA302A1}");
+            info.PortSupplier = localPortSupplier;
             info.LaunchOperation = DEBUG_LAUNCH_OPERATION.DLO_CreateProcess;
             info.LaunchFlags = (__VSDBGLAUNCHFLAGS)grfLaunch | (__VSDBGLAUNCHFLAGS)__VSDBGLAUNCHFLAGS2.DBGLAUNCH_MergeEnv;
 

@@ -90,6 +90,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -138,6 +139,19 @@
     <Compile Include="IntegerValue.cs" />
     <Compile Include="InterfaceType.cs" />
     <Compile Include="JavaType.cs" />
+    <Compile Include="Jdwp\ArrayReferenceCommand.cs" />
+    <Compile Include="Jdwp\ClassObjectReferenceCommand.cs" />
+    <Compile Include="Jdwp\ClassTypeCommand.cs" />
+    <Compile Include="Jdwp\CommandSet.cs" />
+    <Compile Include="Jdwp\EventRequestCommand.cs" />
+    <Compile Include="Jdwp\JdwpDebugProtocolService.cs" />
+    <Compile Include="Jdwp\MethodCommand.cs" />
+    <Compile Include="Jdwp\ObjectReferenceCommand.cs" />
+    <Compile Include="Jdwp\ReferenceTypeCommand.cs" />
+    <Compile Include="Jdwp\StackFrameCommand.cs" />
+    <Compile Include="Jdwp\StringReferenceCommand.cs" />
+    <Compile Include="Jdwp\ThreadReferenceCommand.cs" />
+    <Compile Include="Jdwp\VirtualMachineCommand.cs" />
     <Compile Include="LocalVariable.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="LongType.cs" />
