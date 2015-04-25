@@ -281,7 +281,9 @@
                 return GetStandardError(error);
 
             ulong capabilityValue = (ulong)jvmCapabilities.Capabilities1 | ((ulong)jvmCapabilities.Capabilities2 << 32);
-            capabilities = (Capabilities)capabilityValue;
+            capabilities = (Capabilities)capabilityValue
+                | Capabilities.CanStepByStatement
+                | Capabilities.CanInvokeWithoutThread;
             return GetStandardError(error);
         }
 

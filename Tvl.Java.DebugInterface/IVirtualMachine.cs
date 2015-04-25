@@ -139,6 +139,16 @@
         bool GetCanWatchFieldModification();
 
         /// <summary>
+        /// Determines if the target VM supports the <see cref="StepSize.Statement"/> step size.
+        /// </summary>
+        bool GetCanStepByStatement();
+
+        /// <summary>
+        /// Determines if the target VM supports invoking methods without explicitly providing a thread.
+        /// </summary>
+        bool GetCanInvokeWithoutThread();
+
+        /// <summary>
         /// Returns the loaded reference types that match a given name.
         /// </summary>
         ReadOnlyCollection<IReferenceType> GetClassesByName(string className);

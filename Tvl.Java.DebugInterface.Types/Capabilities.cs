@@ -88,5 +88,9 @@
         CanGenerateResourceExhaustionHeapEvents = 0x0000008000000000,
 
         CanGenerateResourceExhaustionThreadsEvents = 0x0000010000000000,
+
+        CanStepByStatement = 0x0100000000000000,
+
+        CanInvokeWithoutThread = 0x0200000000000000,
     }
 }

@@ -405,6 +405,26 @@
             return (capabilities & Capabilities.CanGenerateFieldModificationEvents) != 0;
         }
 
+        public bool GetCanStepByStatement()
+        {
+            if (ProtocolService == null)
+                throw new VirtualMachineDisconnectedException();
+
+            Capabilities capabilities;
+            DebugErrorHandler.ThrowOnFailure(ProtocolService.GetCapabilities(out capabilities));
+            return (capabilities & Capabilities.CanStepByStatement) != 0;
+        }
+
+        public bool GetCanInvokeWithoutThread()
+        {
+            if (ProtocolService == null)
+                throw new VirtualMachineDisconnectedException();
+
+            Capabilities capabilities;
+            DebugErrorHandler.ThrowOnFailure(ProtocolService.GetCapabilities(out capabilities));
+            return (capabilities & Capabilities.CanInvokeWithoutThread) != 0;
+        }
+
         public ReadOnlyCollection<IReferenceType> GetClassesByName(string className)
         {
             return new ReadOnlyCollection<IReferenceType>(GetAllClasses().Where(i => string.Equals(i.GetName(), className, StringComparison.Ordinal)).ToArray());
