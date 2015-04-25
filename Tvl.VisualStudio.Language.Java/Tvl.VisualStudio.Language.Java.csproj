@@ -1,0 +1,849 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.props" Condition="Exists('..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.props')" />
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.props" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" />
+  <Import Project="..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.props" Condition="Exists('..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{D4AC4DE7-7865-450B-AF14-955B0E3DFD3F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tvl.VisualStudio.Language.Java</RootNamespace>
+    <AssemblyName>Tvl.VisualStudio.Language.Java</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Common debugging support -->
+    <StartAction>Program</StartAction>
+    <StartProgram>$(DevEnvDir)\devenv.exe</StartProgram>
+    <StartArguments>/rootSuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <!-- Use the SDK for the current version of Visual Studio -->
+    <VsSdkTargets Condition="'$(VisualStudioVersion)'!=''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\VSSDK\Microsoft.VsSDK.targets</VsSdkTargets>
+    <VsSdkTargets Condition="'$(VisualStudioVersion)'==''">$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v10.0\VSSDK\Microsoft.VsSDK.targets</VsSdkTargets>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(VisualStudioVersion)' != ''">
+    <!-- This is added to prevent forced migrations in Visual Studio 2012 and newer -->
+    <MinimumVisualStudioVersion>$(VisualStudioVersion)</MinimumVisualStudioVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsPlatformPath />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsContainerAnalysis>False</CodeContractsContainerAnalysis>
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsPlatformPath />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsRuntimeCheckingLevel>ReleaseRequires</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsContainerAnalysis>False</CodeContractsContainerAnalysis>
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Antlr3.Runtime.3.5.0.3-alpha002\lib\net20\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Antlr4.Runtime.net40">
+      <HintPath>..\packages\Antlr4.Runtime.4.3.0\lib\net40-client\Antlr4.Runtime.net40.dll</HintPath>
+    </Reference>
+    <Reference Include="envdte, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\envdte.dll</HintPath>
+    </Reference>
+    <Reference Include="envdte80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.DTE.8.8.0.4\lib\net20\envdte80.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="Microsoft.VisualStudio.ComponentModelHost, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.ComponentModelHost.10.0.4\lib\net40\Microsoft.VisualStudio.ComponentModelHost.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.CoreUtility.10.0.4\lib\net40\Microsoft.VisualStudio.CoreUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Debugger.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Debugger.Interop.10.10.0.4\lib\net40\Microsoft.VisualStudio.Debugger.Interop.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Debugger.InteropA, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Debugger.Interop.9.9.0.4\lib\net20\Microsoft.VisualStudio.Debugger.InteropA.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Designer.Interfaces, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Designer.7.0.4\lib\net20\Microsoft.VisualStudio.Designer.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Editor, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Editor.10.0.4\lib\net40\Microsoft.VisualStudio.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Language.10.0.4\lib\net40\Microsoft.VisualStudio.Language.Intellisense.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.StandardClassification, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Language.10.0.4\lib\net40\Microsoft.VisualStudio.Language.StandardClassification.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.OLE.Interop.7.0.4\lib\net20\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Project.10.0">
+      <HintPath>..\packages\Microsoft.VisualStudio.Project.10.0.1.0.0-alpha005\lib\net40\Microsoft.VisualStudio.Project.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.10.10.0.4\lib\net40\Microsoft.VisualStudio.Shell.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Immutable.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.Immutable.10.10.0.4\lib\net40\Microsoft.VisualStudio.Shell.Immutable.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.Interop.7.0.4\lib\net20\Microsoft.VisualStudio.Shell.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.Interop.10.10.0.4\lib\net20\Microsoft.VisualStudio.Shell.Interop.10.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.Interop.8.8.0.4\lib\net20\Microsoft.VisualStudio.Shell.Interop.8.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Shell.Interop.9.9.0.4\lib\net20\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Text.10.0.4\lib\net40\Microsoft.VisualStudio.Text.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Text.10.0.4\lib\net40\Microsoft.VisualStudio.Text.Logic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Text.10.0.4\lib\net40\Microsoft.VisualStudio.Text.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.Text.10.0.4\lib\net40\Microsoft.VisualStudio.Text.UI.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.TextManager.Interop.7.0.4\lib\net20\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.TextManager.Interop.8.0, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.TextManager.Interop.8.8.0.4\lib\net20\Microsoft.VisualStudio.TextManager.Interop.8.0.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\stdole.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xaml.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="Tvl.VisualStudio.OutputWindow.Interfaces">
+      <HintPath>..\packages\Tvl.VisualStudio.OutputWindow.Interfaces.2.0.0\lib\net40\Tvl.VisualStudio.OutputWindow.Interfaces.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.VSLangProj.7.0.4\lib\net20\VSLangProj.dll</HintPath>
+    </Reference>
+    <Reference Include="VSLangProj2, Version=7.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.VSLangProj.7.0.4\lib\net20\VSLangProj2.dll</HintPath>
+    </Reference>
+    <Reference Include="VSLangProj80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>False</Private>
+      <HintPath>..\packages\VSSDK.VSLangProj.8.8.0.4\lib\net20\VSLangProj80.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BraceMatchingTaggerProvider.cs" />
+    <Compile Include="Debugger\LineStatementAnalyzer.cs" />
+    <Compile Include="JavaUnicodeStreamV4.cs" />
+    <Compile Include="Debugger\AD7Constants.cs" />
+    <Compile Include="Debugger\BreakpointLocation.cs" />
+    <Compile Include="Debugger\BreakpointLocationCodeAddress.cs" />
+    <Compile Include="Debugger\BreakpointLocationCodeContext.cs" />
+    <Compile Include="Debugger\BreakpointLocationCodeFileLine.cs" />
+    <Compile Include="Debugger\BreakpointLocationCodeFunctionOffset.cs" />
+    <Compile Include="Debugger\BreakpointLocationCodeString.cs" />
+    <Compile Include="Debugger\BreakpointLocationDataString.cs" />
+    <Compile Include="Debugger\BreakpointLocationResolution.cs" />
+    <Compile Include="Debugger\BreakpointRequestInfo.cs" />
+    <Compile Include="Debugger\BreakpointResolutionLocation.cs" />
+    <Compile Include="Debugger\BreakpointResolutionLocationCode.cs" />
+    <Compile Include="Debugger\BreakpointResolutionLocationData.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugCodePaths.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugErrorBreakpoints.cs" />
+    <Compile Include="Debugger\Collections\DebugEnumerator`2.cs" />
+    <Compile Include="Debugger\Collections\EnumCodePaths.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugBoundBreakpoints.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugCodeContexts.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugFrameInfo.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugModules.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugPorts.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugProcesses.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugPrograms.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugPropertyInfo.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugReferenceInfo.cs" />
+    <Compile Include="Debugger\Collections\EnumDebugThreads.cs" />
+    <Compile Include="Debugger\DebugExpressionEvaluatorWalker.g3.cs">
+      <DependentUpon>DebugExpressionEvaluatorWalker.g3</DependentUpon>
+    </Compile>
+    <Compile Include="Debugger\EvaluatedExpression.cs" />
+    <Compile Include="Debugger\Events\DebugActivateDocumentEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBeforeSymbolSearchEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBreakEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBreakpointBoundEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBreakpointErrorEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBreakpointEvent.cs" />
+    <Compile Include="Debugger\Events\DebugBreakpointUnboundEvent.cs" />
+    <Compile Include="Debugger\Events\DebugCanStopEvent.cs" />
+    <Compile Include="Debugger\Events\DebugCurrentThreadChangedEvent.cs" />
+    <Compile Include="Debugger\Events\DebugEngineCreateEvent.cs" />
+    <Compile Include="Debugger\Events\DebugEntryPointEvent.cs" />
+    <Compile Include="Debugger\Events\DebugErrorEvent.cs" />
+    <Compile Include="Debugger\Events\DebugEvent.cs" />
+    <Compile Include="Debugger\Events\DebugModuleReloadOperationCompleteEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProcessContinueEvent.cs" />
+    <Compile Include="Debugger\Events\DebugThreadDisplayNameChangeEvent.cs" />
+    <Compile Include="Debugger\Events\DebugThreadFlagChangeEvent.cs" />
+    <Compile Include="Debugger\Events\DebugThreadSuspendChangeEvent.cs" />
+    <Compile Include="Debugger\Events\JavaDebugExceptionEvent.cs" />
+    <Compile Include="Debugger\Events\DebugExpressionEvaluationCompleteEvent.cs" />
+    <Compile Include="Debugger\Events\DebugInterceptExceptionCompleteEvent.cs" />
+    <Compile Include="Debugger\Events\DebugLoadCompleteEvent.cs" />
+    <Compile Include="Debugger\Events\DebugMessageEvent.cs" />
+    <Compile Include="Debugger\Events\DebugModuleLoadEvent.cs" />
+    <Compile Include="Debugger\Events\DebugNoSymbolsEvent.cs" />
+    <Compile Include="Debugger\Events\DebugOutputStringEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProcessCreateEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProcessDestroyEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProgramCreateEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProgramDestroyEvent.cs" />
+    <Compile Include="Debugger\Events\DebugProgramNameChangedEvent.cs" />
+    <Compile Include="Debugger\Events\DebugPropertyCreateEvent.cs" />
+    <Compile Include="Debugger\Events\DebugPropertyDestroyEvent.cs" />
+    <Compile Include="Debugger\Events\DebugReturnValueEvent.cs" />
+    <Compile Include="Debugger\Events\DebugStepCompleteEvent.cs" />
+    <Compile Include="Debugger\Events\DebugSymbolSearchEvent.cs" />
+    <Compile Include="Debugger\Events\DebugThreadDestroyEvent.cs" />
+    <Compile Include="Debugger\Events\DebugThreadNameChangedEvent.cs" />
+    <Compile Include="Debugger\Extensions\DebugBoundBreakpointExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugBreakpointRequestExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugDocumentPositionExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugEventCallbackExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugEventExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugPendingBreakpointExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugPortExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugProcessExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugProgramExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DebugThreadExtensions.cs" />
+    <Compile Include="Debugger\Extensions\ConstGuidArrayExtensions.cs" />
+    <Compile Include="Debugger\Extensions\DISASSEMBLY_STREAM_FIELDSExtensions.cs" />
+    <Compile Include="Debugger\Interop\IDebugProcessQueryProperties.cs" />
+    <Compile Include="Debugger\Interop\IDebugProgramHost2.cs" />
+    <Compile Include="Debugger\Interop\IDebugQueryEngine2.cs" />
+    <Compile Include="Debugger\IJavaVirtualizableBreakpoint.cs" />
+    <Compile Include="Debugger\JavaDebugBoundBreakpoint.cs" />
+    <Compile Include="Debugger\DebugBreakpointResolution.cs" />
+    <Compile Include="Debugger\JavaDebugCodeContext.cs" />
+    <Compile Include="Debugger\JavaDebugDisassemblyStream.cs" />
+    <Compile Include="Debugger\DebugDocumentCodeContext.cs" />
+    <Compile Include="Debugger\JavaDebugDocumentContext.cs" />
+    <Compile Include="Debugger\DebugDocumentPositionContext.cs" />
+    <Compile Include="Debugger\JavaDebugEngine.cs" />
+    <Compile Include="Debugger\DebugErrorBreakpoint.cs" />
+    <Compile Include="Debugger\DebugErrorBreakpointResolution.cs" />
+    <Compile Include="Debugger\JavaDebugExpression.cs" />
+    <Compile Include="Debugger\JavaDebugExpressionContext.cs" />
+    <Compile Include="Debugger\JavaDebugFunctionPosition.cs" />
+    <Compile Include="Debugger\JavaDebuggerConstants.cs" />
+    <Compile Include="Debugger\JavaDebuggerPackage.cs" />
+    <Compile Include="Debugger\JavaDebuggerPackage.ProvideExceptions.cs" />
+    <Compile Include="Debugger\JavaDebugLocationPendingBreakpoint.cs" />
+    <Compile Include="Debugger\JavaDebugMemoryBytes.cs" />
+    <Compile Include="Debugger\JavaDebugMemoryContext.cs" />
+    <Compile Include="Debugger\JavaDebugModule.cs" />
+    <Compile Include="Debugger\JavaDebugPendingBreakpoint.cs" />
+    <Antlr3 Include="Debugger\DebugExpressionEvaluatorWalker.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <Content Include="..\Tvl.Java.BuildTasks\bin\$(Configuration)\Tvl.Java.1.0.0-alpha001.nupkg">
+      <Link>Packages\Tvl.Java.1.0.0-alpha001.nupkg</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Compile Include="Debugger\JavaDebugProgram.cs" />
+    <Compile Include="Debugger\JavaDebugProgramProvider.cs" />
+    <Compile Include="Debugger\JavaDebugProperty.cs" />
+    <Compile Include="Debugger\JavaDebugReference.cs" />
+    <Compile Include="Debugger\JavaDebugStackFrame.cs" />
+    <Compile Include="Debugger\JavaDebugThread.cs" />
+    <Compile Include="Debugger\Events\DebugThreadCreateEvent.cs" />
+    <Compile Include="Debugger\JavaDebugStaticMembersPseudoProperty.cs" />
+    <Compile Include="Debugger\ProvideJvmExceptionAttribute.cs" />
+    <Compile Include="Debugger\ThreadCategory.cs" />
+    <Compile Include="Experimental\BraceLevelTracker.cs" />
+    <Compile Include="Experimental\ClassAnchorTracker.cs" />
+    <Compile Include="Experimental\IJavaClassifierLexerState`1.cs" />
+    <Compile Include="Experimental\JavaClassifierLexerWrapper`1.cs" />
+    <Compile Include="Experimental\JavaSimplifiedAtnBuilder.cs" />
+    <Compile Include="Experimental\JavaSymbolTagger.cs" />
+    <Compile Include="Experimental\JavaSymbolTaggerClassificationTypeNames.cs" />
+    <Compile Include="Experimental\JavaSymbolTaggerProvider.cs" />
+    <Compile Include="Experimental\JavaAtnBuilder.cs" />
+    <Compile Include="Experimental\JavaTopLevelSymbolTaggerAtnBuilder.cs" />
+    <Compile Include="Experimental\ScopeAnchorTag.cs" />
+    <Compile Include="Java.g4.lexer.cs">
+      <DependentUpon>Java.g4</DependentUpon>
+    </Compile>
+    <Compile Include="Java.g4.parser.cs">
+      <DependentUpon>Java.g4</DependentUpon>
+    </Compile>
+    <Compile Include="Java2.g3.lexer.cs">
+      <DependentUpon>Java2.g3</DependentUpon>
+    </Compile>
+    <Compile Include="Java2.g3.parser.cs">
+      <DependentUpon>Java2.g3</DependentUpon>
+    </Compile>
+    <Compile Include="JavaBackgroundParser.cs" />
+    <Compile Include="JavaBackgroundParserProvider.cs" />
+    <Compile Include="JavaClassificationTypeNames.cs" />
+    <Compile Include="JavaClassifierLexer.cs" />
+    <Compile Include="JavaClassifierLexerMode.cs" />
+    <Compile Include="JavaClassifierLexerState.cs" />
+    <Compile Include="JavaColorizerLexer2.g4.cs">
+      <DependentUpon>JavaColorizerLexer2.g4</DependentUpon>
+    </Compile>
+    <Compile Include="JavaErrorTaggerProvider.cs" />
+    <Content Include="..\External\Eula.rtf">
+      <Link>Eula.rtf</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Compile Include="JavaLanguageInfo.cs" />
+    <Compile Include="JavaLanguagePackage.cs" />
+    <Compile Include="JavaParseResultEventArgs.cs" />
+    <Compile Include="JavaUnicodeStream.cs" />
+    <Compile Include="JavaEditorNavigationSourceProvider.cs" />
+    <Compile Include="JavaEditorNavigationSource.cs" />
+    <Compile Include="JavaDocCommentClassifierLexer.g3.cs">
+      <DependentUpon>JavaDocCommentClassifierLexer.g3</DependentUpon>
+    </Compile>
+    <Compile Include="JavaClassificationTypes.cs" />
+    <Compile Include="OptionsPages\JavaIntellisenseOptions.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\JavaIntellisenseOptionsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="OptionsPages\JavaIntellisenseOptionsControl.Designer.cs">
+      <DependentUpon>JavaIntellisenseOptionsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\Automation\OAJarReference.cs" />
+    <Compile Include="Project\Extensions\CommandLineBuilderExtensions.cs" />
+    <Compile Include="Project\Controls\FileBrowserTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\Controls\FileBrowserTextBox.Designer.cs">
+      <DependentUpon>FileBrowserTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\Controls\FolderBrowserTextBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\Controls\FolderBrowserTextBox.Designer.cs">
+      <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\FolderBuildAction.cs" />
+    <Compile Include="Project\JarReferenceNode.cs" />
+    <Compile Include="Project\JarReferenceProperties.cs" />
+    <Compile Include="Project\JavaConfigProvider.cs" />
+    <Compile Include="Project\JavaBuildOptions.cs" />
+    <Compile Include="Project\JavaConfigConstants.cs" />
+    <Compile Include="Project\JavaFileNode.cs" />
+    <Compile Include="Project\JavaFileNodeProperties.cs" />
+    <Compile Include="Project\JavaFolderNode.cs" />
+    <Compile Include="Project\JavaFolderNodeProperties.cs" />
+    <Compile Include="Project\JavaProjectConstants.cs" />
+    <Compile Include="Project\JavaProjectFactory.cs" />
+    <Compile Include="Project\JavaProjectFileConstants.cs" />
+    <Compile Include="Project\JavaProjectNode.cs" />
+    <Compile Include="Project\JavaProjectPackage.cs" />
+    <Compile Include="Project\JavaReferenceContainerNode.cs" />
+    <Compile Include="Project\NativeMethods.cs" />
+    <Compile Include="Project\PropertyPages\JavaApplicationPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaApplicationPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaApplicationPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaApplicationPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\DebuggingInformation.cs" />
+    <Compile Include="Project\PropertyPages\JavaBuildEventsPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaBuildEventsPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaBuildEventsPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaBuildEventsPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaBuildPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaBuildPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaBuildPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaBuildPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaDebugPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaDebugPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaDebugPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaDebugPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaGeneralPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaGeneralPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaGeneralPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaGeneralPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\JavaProjectConfig.cs" />
+    <Compile Include="Project\PropertyPages\JavaPropertyPage.cs" />
+    <Compile Include="Project\PropertyPages\JavaPropertyPagePanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\JavaPropertyPagePanel.Designer.cs">
+      <DependentUpon>JavaPropertyPagePanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\MavenComponentSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Project\PropertyPages\MavenComponentSelector.Designer.cs">
+      <DependentUpon>MavenComponentSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\PropertyPages\PropertyPageArgumentException.cs" />
+    <Compile Include="Project\PropertyPages\StartAction.cs" />
+    <Compile Include="Project\PropertyPages\WarningsAsErrors.cs" />
+    <Compile Include="SourceData\CodeArrayType.cs" />
+    <Compile Include="SourceData\CodeClass.cs" />
+    <Compile Include="SourceData\CodeElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodeField.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodeImportStatement.cs" />
+    <Compile Include="SourceData\CodeInterface.cs" />
+    <Compile Include="SourceData\CodeLocation.cs" />
+    <Compile Include="SourceData\CodeMember.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodeMethod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodePackage.cs" />
+    <Compile Include="SourceData\CodePackageStatement.cs" />
+    <Compile Include="SourceData\CodeParameter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodePhysicalFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodePrimitiveType.cs" />
+    <Compile Include="SourceData\CodeProjectFile.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodeStatementBlock.cs" />
+    <Compile Include="SourceData\CodeType.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\CodeTypeReference.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\Emit\CodeAttributeInterfaceBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeClassBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeElementBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeEnumBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeFieldBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeFileBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeImportBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeInterfaceBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeMemberBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeMethodBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodePackageStatementBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeParameterBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeTypeBuilder.cs" />
+    <Compile Include="SourceData\Emit\CodeTypeReferenceBuilder.cs" />
+    <Compile Include="SourceData\Emit\ITypeBuilderContainer.cs" />
+    <Compile Include="SourceData\ExpressionEvaluatorWalker.g3.cs" />
+    <Compile Include="SourceData\IntelliSenseCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SourceData\IntelliSenseCacheWalker.g3.cs">
+      <DependentUpon>IntelliSenseCacheWalker.g3</DependentUpon>
+    </Compile>
+    <Compile Include="SourceData\NameResolutionContext.AggregateContext.cs" />
+    <Compile Include="SourceData\NameResolutionContext.cs" />
+    <Compile Include="SourceData\NameResolutionContext.GlobalContext.cs" />
+    <Compile Include="SourceData\NameResolutionContext.ImportContext.cs" />
+    <Compile Include="SourceData\NameResolutionContext.TypeContext.cs" />
+    <Compile Include="Text\CancellationPolicy.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="JavaClassifier.cs" />
+    <Compile Include="JavaClassifierProvider.cs" />
+    <Compile Include="JavaColorizerLexer.g3.cs">
+      <DependentUpon>JavaColorizerLexer.g3</DependentUpon>
+    </Compile>
+    <Compile Include="JavaCommenterProvider.cs" />
+    <Compile Include="JavaIntellisenseController.cs" />
+    <Compile Include="JavaIntellisenseControllerProvider.cs" />
+    <Compile Include="JavaQuickInfoSource.cs" />
+    <Compile Include="JavaQuickInfoSourceProvider.cs" />
+    <Compile Include="JavaTextStructureNavigator.cs" />
+    <Compile Include="JavaTextStructureNavigatorProvider.cs" />
+    <Compile Include="OutliningTagger.cs" />
+    <Compile Include="OutliningTaggerProvider.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services.cs" />
+    <Compile Include="Text.Language\ILanguageElementManager.cs" />
+    <Compile Include="Text.Language\ILanguageElementManagerService.cs" />
+    <Compile Include="Text.Language\LanguageElementManager.cs" />
+    <Compile Include="Text.Language\LanguageElementManagerService.cs" />
+    <Compile Include="Text.Language\LanguageElementsChangedEventArgs.cs" />
+    <EmbeddedResource Include="Project\PropertyPages\JavaApplicationPropertyPagePanel.resx">
+      <DependentUpon>JavaApplicationPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\Resources\imagelis.bmp" />
+    <Content Include="VSIXProject_large.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="VSIXProject_small.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="..\Build\Keys\JavaSupport.snk">
+      <Link>Key.snk</Link>
+    </None>
+    <Antlr3 Include="Java2.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <Antlr3 Include="JavaDocCommentClassifierLexer.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <Antlr3 Include="SourceData\IntelliSenseCacheWalker.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <Antlr3 Include="SourceData\ExpressionEvaluatorWalker.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <Antlr4 Include="JavaColorizerLexer2.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Tvl.VisualStudio.Language.Java</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="Java.g4">
+      <Generator>MSBuild:Compile</Generator>
+      <CustomToolNamespace>Tvl.VisualStudio.Language.Java</CustomToolNamespace>
+    </Antlr4>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Antlr3 Include="JavaColorizerLexer.g3">
+      <Generator>MSBuild:Compile</Generator>
+    </Antlr3>
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Templates\Java\ItemTemplates\JavaClassItemTemplate\JavaClassItemTemplate.csproj">
+      <Project>{4F09FA7B-761E-4EEF-B705-53AF973B4B59}</Project>
+      <Name>JavaClassItemTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Item</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\Java\ItemTemplates\JavaCodeFileItemTemplate\JavaCodeFileItemTemplate.csproj">
+      <Project>{4DF3F0E0-A3BD-4522-B16E-27FFC8453E1D}</Project>
+      <Name>JavaCodeFileItemTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Item</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\Java\ItemTemplates\JavaInterfaceItemTemplate\JavaInterfaceItemTemplate.csproj">
+      <Project>{2A89CA0B-91C3-4F5A-832B-7ABE3B94A643}</Project>
+      <Name>JavaInterfaceItemTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Item</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ItemTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\Java\ProjectTemplates\JavaClassLibraryProjectTemplate\JavaClassLibraryProjectTemplate.csproj">
+      <Project>{DE3785D0-ABA0-4F33-8D4A-8086D8E7DBA0}</Project>
+      <Name>JavaClassLibraryProjectTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Project</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\Java\ProjectTemplates\JavaConsoleApplicationProjectTemplate\JavaConsoleApplicationProjectTemplate.csproj">
+      <Project>{76300F7B-9997-47FE-AD18-420D7B4F4E92}</Project>
+      <Name>JavaConsoleApplicationProjectTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Project</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Templates\Java\ProjectTemplates\JavaEmptyProjectProjectTemplate\JavaEmptyProjectProjectTemplate.csproj">
+      <Project>{E2176434-D936-46EF-80C4-B358BE7FA2CB}</Project>
+      <Name>JavaEmptyProjectProjectTemplate</Name>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <TemplateType>Project</TemplateType>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Core\Tvl.Core.csproj">
+      <Project>{ADD60D3C-8EF6-44ED-B7CD-1FD13FBF8036}</Project>
+      <Name>Tvl.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugHostWrapper\Tvl.Java.DebugHostWrapper.vcxproj">
+      <Project>{538F6A87-53C9-4F02-B154-2A6925715C1C}</Project>
+      <Name>Tvl.Java.DebugHostWrapper</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugHostWrapper\Tvl.Java.DebugHostWrapperX64.vcxproj">
+      <Project>{65C841CD-AEC6-416C-B22D-B2116B36B0B5}</Project>
+      <Name>Tvl.Java.DebugHostWrapperX64</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugHost\Tvl.Java.DebugHost.csproj">
+      <Project>{833550B8-B651-4FFB-B3AE-BF572AC4A18C}</Project>
+      <Name>Tvl.Java.DebugHost</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugInterface.Client\Tvl.Java.DebugInterface.Client.csproj">
+      <Project>{4BB229A4-3259-49E9-B05B-A4C0F3496CA6}</Project>
+      <Name>Tvl.Java.DebugInterface.Client</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugInterface.Types\Tvl.Java.DebugInterface.Types.csproj">
+      <Project>{889EF7CB-9682-4D01-8757-D6FE5B460E9A}</Project>
+      <Name>Tvl.Java.DebugInterface.Types</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.Java.DebugInterface\Tvl.Java.DebugInterface.csproj">
+      <Project>{DB91E4D1-20D6-44D1-94DA-971ACEDAA0B8}</Project>
+      <Name>Tvl.Java.DebugInterface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Antlr\Tvl.VisualStudio.Language.Antlr.csproj">
+      <Project>{3852C7D0-60EA-45CC-A84C-BF66B350CF3B}</Project>
+      <Name>Tvl.VisualStudio.Language.Antlr</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Language.Implementation\Tvl.VisualStudio.Language.Implementation.csproj">
+      <Project>{9c111828-9344-4cb2-8a2c-a20c4b909908}</Project>
+      <Name>Tvl.VisualStudio.Language.Implementation</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Language.Interfaces\Tvl.VisualStudio.Language.Interfaces.csproj">
+      <Project>{4599ac99-de26-4686-8821-67cf461c6b26}</Project>
+      <Name>Tvl.VisualStudio.Language.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Language\Tvl.VisualStudio.Language.csproj">
+      <Project>{90E28BCA-BD13-475B-B051-7A7D852A6206}</Project>
+      <Name>Tvl.VisualStudio.Language</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Shell.Implementation\Tvl.VisualStudio.Shell.Implementation.csproj">
+      <Project>{d9c9e707-e9c3-428b-85bd-b5aae8f714a2}</Project>
+      <Name>Tvl.VisualStudio.Shell.Implementation</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Shell\Tvl.VisualStudio.Shell.csproj">
+      <Project>{93C8C1B3-9C22-4DE3-A06B-28947E503ED9}</Project>
+      <Name>Tvl.VisualStudio.Shell</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Text.Implementation\Tvl.VisualStudio.Text.Implementation.csproj">
+      <Project>{d9b45c61-9721-41b7-9abf-85c452cd9f49}</Project>
+      <Name>Tvl.VisualStudio.Text.Implementation</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Text.Interfaces\Tvl.VisualStudio.Text.Interfaces.csproj">
+      <Project>{36884750-a681-412c-9ebf-801847f38df1}</Project>
+      <Name>Tvl.VisualStudio.Text.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Tvl.VisualStudio.Text\Tvl.VisualStudio.Text.csproj">
+      <Project>{2B913C3A-3FD8-4633-81C8-683AF66741A8}</Project>
+      <Name>Tvl.VisualStudio.Text</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OptionsPages\JavaIntellisenseOptionsControl.resx">
+      <DependentUpon>JavaIntellisenseOptionsControl.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\Controls\FileBrowserTextBox.resx">
+      <DependentUpon>FileBrowserTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\Controls\FolderBrowserTextBox.resx">
+      <DependentUpon>FolderBrowserTextBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\PropertyPages\JavaBuildEventsPropertyPagePanel.resx">
+      <DependentUpon>JavaBuildEventsPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\PropertyPages\JavaBuildPropertyPagePanel.resx">
+      <DependentUpon>JavaBuildPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\PropertyPages\JavaDebugPropertyPagePanel.resx">
+      <DependentUpon>JavaDebugPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project\PropertyPages\JavaGeneralPropertyPagePanel.resx">
+      <DependentUpon>JavaGeneralPropertyPagePanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx">
+      <SubType>Designer</SubType>
+      <LogicalName>VSPackage.resources</LogicalName>
+      <MergeWithCTO>true</MergeWithCTO>
+    </EmbeddedResource>
+  </ItemGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Build\Keys\JavaSupport.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Condition="Exists($(VsSdkTargets))" Project="$(VsSdkTargets)" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.targets'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.props'))" />
+    <Error Condition="!Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Antlr4.4.3.0\build\Antlr4.targets'))" />
+    <Error Condition="!Exists('..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.props'))" />
+    <Error Condition="!Exists('..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.targets'))" />
+  </Target>
+  <Import Project="..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.targets" Condition="Exists('..\packages\Antlr3.3.5.0.3-alpha002\build\Antlr3.targets')" />
+  <Import Project="..\packages\Antlr4.4.3.0\build\Antlr4.targets" Condition="Exists('..\packages\Antlr4.4.3.0\build\Antlr4.targets')" />
+  <Import Project="..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.targets" Condition="Exists('..\packages\Tvl.VisualStudio.OutputWindow.2.0.1\build\Tvl.VisualStudio.OutputWindow.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Class</Name>
+    <Description>An empty class definition</Description>
+    <Icon>JavaClassItemTemplate.ico</Icon>
+    <TemplateID>82be4d7f-544e-4418-83cb-b114c562b384</TemplateID>
+    <ProjectType>Java</ProjectType>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Class.java</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true">Class.java</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

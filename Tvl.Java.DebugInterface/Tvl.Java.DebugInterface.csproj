@@ -1,0 +1,362 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{DB91E4D1-20D6-44D1-94DA-971ACEDAA0B8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Tvl.Java.DebugInterface</RootNamespace>
+    <AssemblyName>Tvl.Java.DebugInterface</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>False</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>False</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>False</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>True</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>False</CodeContractsCacheAnalysisResults>
+    <CodeContractsRuntimeCheckingLevel>ReleaseRequires</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>Build</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Build\Keys\JavaSupport.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AccessModifiers.cs" />
+    <Compile Include="ClassNotLoadedException.cs" />
+    <Compile Include="ClassNotPreparedException.cs" />
+    <Compile Include="Connect\ConnectorArgumentException.cs" />
+    <Compile Include="Connect\Contracts\IAttachingConnectorContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorArgumentContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorBooleanArgumentContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorIntegerArgumentContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorSelectedArgumentContracts.cs" />
+    <Compile Include="Connect\Contracts\IConnectorStringArgumentContracts.cs" />
+    <Compile Include="Connect\Contracts\ILaunchingConnectorContracts.cs" />
+    <Compile Include="Connect\Contracts\IListeningConnectorContracts.cs" />
+    <Compile Include="Connect\Contracts\ITransportContracts.cs" />
+    <Compile Include="Connect\VirtualMachineStartException.cs" />
+    <Compile Include="Contracts\IAccessibleContracts.cs" />
+    <Compile Include="Contracts\IArrayReferenceContracts.cs" />
+    <Compile Include="Contracts\IArrayTypeContracts.cs" />
+    <Compile Include="Contracts\IBooleanTypeContracts.cs" />
+    <Compile Include="Contracts\IBooleanValueContracts.cs" />
+    <Compile Include="Contracts\IByteTypeContracts.cs" />
+    <Compile Include="Contracts\IByteValueContracts.cs" />
+    <Compile Include="Contracts\ICharTypeContracts.cs" />
+    <Compile Include="Contracts\ICharValueContracts.cs" />
+    <Compile Include="Contracts\IClassLoaderReferenceContracts.cs" />
+    <Compile Include="Contracts\IClassObjectReferenceContracts.cs" />
+    <Compile Include="Contracts\IClassTypeContracts.cs" />
+    <Compile Include="Contracts\IDoubleTypeContracts.cs" />
+    <Compile Include="Contracts\IDoubleValueContracts.cs" />
+    <Compile Include="Contracts\IFieldContracts.cs" />
+    <Compile Include="Contracts\IFloatTypeContracts.cs" />
+    <Compile Include="Contracts\IFloatValueContracts.cs" />
+    <Compile Include="Contracts\IIntegerTypeContracts.cs" />
+    <Compile Include="Contracts\IIntegerValueContracts.cs" />
+    <Compile Include="Contracts\IInterfaceTypeContracts.cs" />
+    <Compile Include="Contracts\ILocalVariableContracts.cs" />
+    <Compile Include="Contracts\ILocatableContracts.cs" />
+    <Compile Include="Contracts\ILocationContracts.cs" />
+    <Compile Include="Contracts\ILongTypeContracts.cs" />
+    <Compile Include="Contracts\ILongValueContracts.cs" />
+    <Compile Include="Contracts\IMethodContracts.cs" />
+    <Compile Include="Contracts\IMirrorContracts.cs" />
+    <Compile Include="Contracts\IMonitorInfoContracts.cs" />
+    <Compile Include="Contracts\IObjectReferenceContracts.cs" />
+    <Compile Include="Contracts\IPathSearchingVirtualMachineContracts.cs" />
+    <Compile Include="Contracts\IPrimitiveTypeContracts.cs" />
+    <Compile Include="Contracts\IPrimitiveValueContracts.cs" />
+    <Compile Include="Contracts\IReferenceTypeContracts.cs" />
+    <Compile Include="Contracts\IShortTypeContracts.cs" />
+    <Compile Include="Contracts\IShortValueContracts.cs" />
+    <Compile Include="Contracts\IStackFrameContracts.cs" />
+    <Compile Include="Contracts\IStringReferenceContracts.cs" />
+    <Compile Include="Contracts\IStrongValueHandleContracts`1.cs" />
+    <Compile Include="Contracts\IThreadGroupReferenceContracts.cs" />
+    <Compile Include="Contracts\IThreadReferenceContracts.cs" />
+    <Compile Include="Contracts\ITypeComponentContracts.cs" />
+    <Compile Include="Contracts\ITypeContracts.cs" />
+    <Compile Include="Contracts\IValueContracts.cs" />
+    <Compile Include="Contracts\IVirtualMachineContracts.cs" />
+    <Compile Include="Contracts\IVirtualMachineManagerContracts.cs" />
+    <Compile Include="Contracts\IVoidTypeContracts.cs" />
+    <Compile Include="Contracts\IVoidValueContracts.cs" />
+    <Compile Include="DebuggerTimeoutException.cs" />
+    <Compile Include="Connect\IAttachingConnector.cs" />
+    <Compile Include="Connect\IConnector.cs" />
+    <Compile Include="Connect\IConnectorArgument.cs" />
+    <Compile Include="Connect\IConnectorBooleanArgument.cs" />
+    <Compile Include="Connect\IConnectorIntegerArgument.cs" />
+    <Compile Include="Connect\IConnectorSelectedArgument.cs" />
+    <Compile Include="Connect\IConnectorStringArgument.cs" />
+    <Compile Include="Connect\ILaunchingConnector.cs" />
+    <Compile Include="Connect\IListeningConnector.cs" />
+    <Compile Include="Connect\ITransport.cs" />
+    <Compile Include="Connect\TransportTimeoutException.cs" />
+    <Compile Include="DebuggerArgumentException.cs" />
+    <Compile Include="DebuggerException.cs" />
+    <Compile Include="DebuggerInvalidOperationException.cs" />
+    <Compile Include="Events\Contracts\IAccessWatchpointEventContracts.cs" />
+    <Compile Include="Events\Contracts\IBreakpointEventContracts.cs" />
+    <Compile Include="Events\Contracts\IClassPrepareEventContracts.cs" />
+    <Compile Include="Events\Contracts\IClassUnloadEventContracts.cs" />
+    <Compile Include="Events\Contracts\IEventContracts.cs" />
+    <Compile Include="Events\Contracts\IEventQueueContracts.cs" />
+    <Compile Include="Events\Contracts\IEventSetContracts.cs" />
+    <Compile Include="Events\Contracts\IExceptionEventContracts.cs" />
+    <Compile Include="Events\Contracts\ILocatableEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMethodEntryEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMethodExitEventContracts.cs" />
+    <Compile Include="Events\Contracts\IModificationWatchpointEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMonitorContendedEnteredEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMonitorContendedEnterEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMonitorEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMonitorWaitedEventContracts.cs" />
+    <Compile Include="Events\Contracts\IMonitorWaitEventContracts.cs" />
+    <Compile Include="Events\Contracts\IStepEventContracts.cs" />
+    <Compile Include="Events\Contracts\IThreadDeathEventContracts.cs" />
+    <Compile Include="Events\Contracts\IThreadEventContracts.cs" />
+    <Compile Include="Events\Contracts\IThreadStartEventContracts.cs" />
+    <Compile Include="Events\Contracts\IVirtualMachineDeathEventContracts.cs" />
+    <Compile Include="Events\Contracts\IVirtualMachineDisconnectEventContracts.cs" />
+    <Compile Include="Events\Contracts\IVirtualMachineStartEventContracts.cs" />
+    <Compile Include="Events\Contracts\IWatchpointEventContracts.cs" />
+    <Compile Include="Events\IMonitorWaitEvent.cs" />
+    <Compile Include="Events\IMonitorContendedEnterEvent.cs" />
+    <Compile Include="Events\IAccessWatchpointEvent.cs" />
+    <Compile Include="Events\IBreakpointEvent.cs" />
+    <Compile Include="Events\IClassPrepareEvent.cs" />
+    <Compile Include="Events\IClassUnloadEvent.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Events\IEventQueue.cs" />
+    <Compile Include="Events\IExceptionEvent.cs" />
+    <Compile Include="Events\IMethodEntryEvent.cs" />
+    <Compile Include="Events\IMethodExitEvent.cs" />
+    <Compile Include="Events\IModificationWatchpointEvent.cs" />
+    <Compile Include="Events\IMonitorContendedEnteredEvent.cs" />
+    <Compile Include="Events\IMonitorEvent.cs" />
+    <Compile Include="Events\IMonitorWaitedEvent.cs" />
+    <Compile Include="Events\IStepEvent.cs" />
+    <Compile Include="Events\IThreadDeathEvent.cs" />
+    <Compile Include="Events\IThreadEvent.cs" />
+    <Compile Include="Events\IThreadStartEvent.cs" />
+    <Compile Include="Events\IVirtualMachineDeathEvent.cs" />
+    <Compile Include="Events\IVirtualMachineDisconnectEvent.cs" />
+    <Compile Include="Events\IVirtualMachineStartEvent.cs" />
+    <Compile Include="IncompatibleThreadStateException.cs" />
+    <Compile Include="InconsistentDebugInfoException.cs" />
+    <Compile Include="InternalException.cs" />
+    <Compile Include="InvalidStackFrameException.cs" />
+    <Compile Include="InvalidTypeException.cs" />
+    <Compile Include="InvocationException.cs" />
+    <Compile Include="InvokeOptions.cs" />
+    <Compile Include="IStrongValueHandle`1.cs" />
+    <Compile Include="MissingInformationException.cs" />
+    <Compile Include="NativeMethodException.cs" />
+    <Compile Include="ObjectCollectionException.cs" />
+    <Compile Include="Request\Contracts\IAccessWatchpointRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IBreakpointRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IClassFilterContracts.cs" />
+    <Compile Include="Request\Contracts\IClassNameFilterContracts.cs" />
+    <Compile Include="Request\Contracts\IClassPrepareRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IClassUnloadRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IEventRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IEventRequestManagerContracts.cs" />
+    <Compile Include="Request\Contracts\IExceptionRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IInstanceFilterContracts.cs" />
+    <Compile Include="Request\Contracts\IMethodEntryRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IMethodExitRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IModificationWatchpointRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IMonitorContendedEnteredRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IMonitorContendedEnterRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IMonitorWaitedRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IMonitorWaitRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IStepRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IThreadDeathRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IThreadFilterContracts.cs" />
+    <Compile Include="Request\Contracts\IThreadStartRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IVirtualMachineDeathRequestContracts.cs" />
+    <Compile Include="Request\Contracts\IWatchpointRequestContracts.cs" />
+    <Compile Include="Request\StepDepth.cs" />
+    <Compile Include="Request\DuplicateRequestException.cs" />
+    <Compile Include="Request\IAccessWatchpointRequest.cs" />
+    <Compile Include="Request\IBreakpointRequest.cs" />
+    <Compile Include="Request\IClassFilter.cs" />
+    <Compile Include="Request\IClassNameFilter.cs" />
+    <Compile Include="Request\IClassPrepareRequest.cs" />
+    <Compile Include="Request\IClassUnloadRequest.cs" />
+    <Compile Include="Request\IEventRequest.cs" />
+    <Compile Include="Events\IEventSet.cs" />
+    <Compile Include="Events\ILocatableEvent.cs" />
+    <Compile Include="Events\IWatchpointEvent.cs" />
+    <Compile Include="IVirtualMachineManager.cs" />
+    <Compile Include="IVoidType.cs" />
+    <Compile Include="IShortType.cs" />
+    <Compile Include="IShortValue.cs" />
+    <Compile Include="ILongType.cs" />
+    <Compile Include="ILongValue.cs" />
+    <Compile Include="IIntegerType.cs" />
+    <Compile Include="IIntegerValue.cs" />
+    <Compile Include="IFloatType.cs" />
+    <Compile Include="IFloatValue.cs" />
+    <Compile Include="IAccessible.cs" />
+    <Compile Include="IArrayReference.cs" />
+    <Compile Include="IBooleanType.cs" />
+    <Compile Include="IBooleanValue.cs" />
+    <Compile Include="IByteType.cs" />
+    <Compile Include="IByteValue.cs" />
+    <Compile Include="ICharType.cs" />
+    <Compile Include="ICharValue.cs" />
+    <Compile Include="IClassLoaderReference.cs" />
+    <Compile Include="IClassObjectReference.cs" />
+    <Compile Include="IClassType.cs" />
+    <Compile Include="IDoubleType.cs" />
+    <Compile Include="IDoubleValue.cs" />
+    <Compile Include="IField.cs" />
+    <Compile Include="IInterfaceType.cs" />
+    <Compile Include="ILocalVariable.cs" />
+    <Compile Include="IArrayType.cs" />
+    <Compile Include="ILocatable.cs" />
+    <Compile Include="ILocation.cs" />
+    <Compile Include="IMethod.cs" />
+    <Compile Include="IMirror.cs" />
+    <Compile Include="IMonitorInfo.cs" />
+    <Compile Include="IObjectReference.cs" />
+    <Compile Include="IPathSearchingVirtualMachine.cs" />
+    <Compile Include="IPrimitiveType.cs" />
+    <Compile Include="IPrimitiveValue.cs" />
+    <Compile Include="IReferenceType.cs" />
+    <Compile Include="IStackFrame.cs" />
+    <Compile Include="IStringReference.cs" />
+    <Compile Include="IThreadGroupReference.cs" />
+    <Compile Include="IThreadReference.cs" />
+    <Compile Include="IType.cs" />
+    <Compile Include="ITypeComponent.cs" />
+    <Compile Include="IValue.cs" />
+    <Compile Include="IVirtualMachine.cs" />
+    <Compile Include="IVoidValue.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Request\IEventRequestManager.cs" />
+    <Compile Include="Request\IExceptionRequest.cs" />
+    <Compile Include="Request\IInstanceFilter.cs" />
+    <Compile Include="Request\IMethodEntryRequest.cs" />
+    <Compile Include="Request\IMethodExitRequest.cs" />
+    <Compile Include="Request\IModificationWatchpointRequest.cs" />
+    <Compile Include="Request\IMonitorContendedEnteredRequest.cs" />
+    <Compile Include="Request\IMonitorContendedEnterRequest.cs" />
+    <Compile Include="Request\IMonitorWaitedRequest.cs" />
+    <Compile Include="Request\IMonitorWaitRequest.cs" />
+    <Compile Include="Request\InvalidRequestStateException.cs" />
+    <Compile Include="Request\IStepRequest.cs" />
+    <Compile Include="Request\IThreadDeathRequest.cs" />
+    <Compile Include="Request\IThreadFilter.cs" />
+    <Compile Include="Request\IThreadStartRequest.cs" />
+    <Compile Include="Request\IVirtualMachineDeathRequest.cs" />
+    <Compile Include="Request\IWatchpointRequest.cs" />
+    <Compile Include="Request\StepSize.cs" />
+    <Compile Include="Request\SuspendPolicy.cs" />
+    <Compile Include="ThreadStatus.cs" />
+    <Compile Include="TraceModes.cs" />
+    <Compile Include="VirtualMachineCannotBeModifiedException.cs" />
+    <Compile Include="VirtualMachineDisconnectedException.cs" />
+    <Compile Include="VirtualMachineMismatchException.cs" />
+    <Compile Include="VirtualMachineOutOfMemoryException.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Build\Keys\JavaSupport.snk">
+      <Link>Key.snk</Link>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Tvl.Java.DebugInterface.Types\Tvl.Java.DebugInterface.Types.csproj">
+      <Project>{889EF7CB-9682-4D01-8757-D6FE5B460E9A}</Project>
+      <Name>Tvl.Java.DebugInterface.Types</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata minClientVersion="2.5">
+    <id>Tvl.Java</id>
+    <version>0.0.0</version>
+    <authors>Sam Harwell</authors>
+    <owners>Sam Harwell</owners>
+    <description>Provides support for building Java applications (*.javaproj projects).</description>
+    <language>en-us</language>
+    <!--<projectUrl>https://github.com/sharwell/antlr4cs</projectUrl>-->
+    <!--<licenseUrl>https://raw.github.com/sharwell/antlr4cs/master/LICENSE.txt</licenseUrl>-->
+    <!--<iconUrl>https://raw.github.com/antlr/website-antlr4/master/images/icons/antlr.png</iconUrl>-->
+    <copyright>Copyright © Sam Harwell 2014</copyright>
+    <!--<releaseNotes>https://github.com/sharwell/antlr4cs/releases/v$version$</releaseNotes>-->
+    <!--<requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <tags>java</tags>
+    <title>Java Build Support</title>
+    <summary>Provides support for building Java applications.</summary>
+  </metadata>
+  <files>
+    <!-- Build Configuration -->
+    <file src="bin\$Configuration$\Tvl.Java.props" target="build\Tvl.Java.props"/>
+    <file src="bin\$Configuration$\Tvl.Java.targets" target="build\Tvl.Java.targets"/>
+    <file src="bin\$Configuration$\Tvl.Jvm.Common.targets" target="build\Tvl.Jvm.Common.targets"/>
+    <file src="bin\$Configuration$\Tvl.Java.BuildTasks.dll" target="build"/>
+  </files>
+</package>

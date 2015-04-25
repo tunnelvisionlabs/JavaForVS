@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Code File</Name>
+    <Description>A blank Java code file</Description>
+    <Icon>JavaCodeFileItemTemplate.ico</Icon>
+    <TemplateID>36636984-5679-489a-9467-555bf242ec38</TemplateID>
+    <ProjectType>Java</ProjectType>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>CodeFile.java</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true">CodeFile.java</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

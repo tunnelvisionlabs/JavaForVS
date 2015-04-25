@@ -1,0 +1,51 @@
+﻿lexer grammar JavaDocCommentClassifierLexer;
+
+options {
+	language=CSharp3;
+	TokenLabelType=CommonToken;
+	tokenVocab=JavaColorizerLexer;
+}
+
+@namespace{Tvl.VisualStudio.Language.Java}
+@modifier{internal}
+@ctorModifier{private}
+
+END_COMMENT
+	:	'*/'
+	;
+
+fragment // disables this rule for now without breaking references to the token type in code
+SVN_REFERENCE
+	:	'$'
+		(	~('$'|'\n'|'\r'|'*')
+		|	{input.LA(2) != '/'}? => '*'
+		)*
+		'$'
+	;
+
+DOC_COMMENT_TEXT
+	:	//'$'? // this is a stray '$' that couldn't be made into an SVN_REFERENCE
+		(	~('@' | '\\' | '\r' | '\n' | '*' /*| '$'*/)
+		|	{input.LA(2) != '/'}? => '*'
+		|	{!IsDocCommentStartCharacter(input.LA(2))}? => ('\\' | '@')
+		)+
+	;
+
+DOC_COMMENT_TAG
+	:	('\\' | '@')
+		(	('$' | '@' | '&' | '~' | '<' | '>' | '#' | '%' | '"')
+		|	'\\' '::'?
+		|	'f' ('$' | '[' | ']' | '{' | '}')
+		|	('a'..'z' | 'A'..'Z')+
+		)
+	;
+
+fragment DOC_COMMENT_INVALID_TAG : ;
+
+NEWLINE
+	:	'\r'? '\n'
+	;
+
+ANY_CHAR
+	:	.
+	;

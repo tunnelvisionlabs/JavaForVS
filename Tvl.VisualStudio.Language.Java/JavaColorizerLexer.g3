@@ -1,0 +1,129 @@
+﻿lexer grammar JavaColorizerLexer;
+
+options
+{
+	language=CSharp3;
+	tokenVocab=Java2;
+}
+
+@namespace{Tvl.VisualStudio.Language.Java}
+@modifier{internal}
+@ctorModifier{private}
+
+// separators
+LPAREN:'(';
+RPAREN:')';
+LBRACKET:'[';
+RBRACKET:']';
+LBRACE:'{';
+RBRACE:'}';
+SEMI:';';
+COMMA:',';
+DOT:'.';
+AT:'@';
+
+// operators
+EQ			:'=';
+NEQ			:'!=';
+EQEQ		:'==';
+PLUS		:'+';
+PLUSEQ		:'+=';
+MINUS		:'-';
+MINUSEQ		:'-=';
+TIMES		:'*';
+TIMESEQ		:'*=';
+DIV			:'/';
+DIVEQ		:'/=';
+LT			:'<';
+GT			:'>';
+LE			:'<=';
+GE			:'>=';
+NOT			:'!';
+BITNOT		:'~';
+AND			:'&&';
+BITAND		:'&';
+ANDEQ		:'&=';
+QUES		:'?';
+OR			:'||';
+BITOR		:'|';
+OREQ		:'|=';
+COLON		:':';
+INC			:'++';
+DEC			:'--';
+XOR			:'^';
+XOREQ		:'^=';
+MOD			:'%';
+MODEQ		:'%=';
+LSHIFT		:'<<';
+RSHIFT		:'>>';
+LSHIFTEQ	:'<<=';
+RSHIFTEQ	:'>>=';
+ROR			:'>>>';
+ROREQ		:'>>>=';
+
+IDENTIFIER
+	:	('a'..'z' | 'A'..'Z' | '_' | '$')
+		('a'..'z' | 'A'..'Z' | '0'..'9' | '_' | '$')*
+	;
+
+NUMBER
+	:	(	'0'..'9'
+		| 	'.' '0'..'9'
+		)
+		(IDENTIFIER NUMBER?)?
+	;
+
+COMMENT
+	:	'//' (~('\r' | '\n'))*
+	;
+
+DOC_COMMENT_START
+	:	{input.LA(4) != '/'}? => '/**'
+	;
+
+EMPTY_BLOCK_COMMENT
+	:	'/**/' {$type = ML_COMMENT;}
+	;
+
+ML_COMMENT
+	:	{input.LA(3) != '*'}? => '/*' {$type = CONTINUE_COMMENT;}
+	;
+
+fragment END_COMMENT : ;
+
+fragment
+CONTINUE_COMMENT
+	:	(	~('\r'|'\n'|'*')
+		|	{input.LA(2) != '/'}? => '*'
+		)+
+		{state.type = CONTINUE_COMMENT;}
+	|	'*/' {state.type = END_COMMENT;}
+	;
+
+CHAR_LITERAL
+	:	'\''
+		(	'\\' .
+		|	~('\r' | '\n' | '\'' | '\\')
+		)*
+		'\''
+	;
+
+STRING_LITERAL
+	:	'"'
+		(	'\\' .
+		|	~('\r' | '\n' | '"' | '\\')
+		)*
+		'"'
+	;
+
+WS
+	:	(' ' | '\t')+
+	;
+
+NEWLINE
+	:	'\r'? '\n'
+	;
+
+ANYCHAR
+	:	.
+	;

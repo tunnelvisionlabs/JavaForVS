@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Vsix Version="1.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2010">
+  <Identifier Id="Tvl.VisualStudio.OutputWindow.1a87220f-ee82-4c49-bcfb-bbb9bc4df16d">
+    <Name>Tunnel Vision Labs Output Window Services</Name>
+    <Author>Sam Harwell</Author>
+    <Version>2.1.0</Version>
+    <Description xml:space="preserve">Supporting framework for Tunnel Vision Labs' extensions for Visual Studio.</Description>
+    <Locale>1033</Locale>
+    <License>Eula.rtf</License>
+    <!--<Icon>VSIXProject_small.png</Icon>
+    <PreviewImage>VSIXProject_large.png</PreviewImage>-->
+    <SupportedProducts>
+      <VisualStudio Version="10.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+        <Edition>IntegratedShell</Edition>
+      </VisualStudio>
+      <VisualStudio Version="11.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+        <Edition>IntegratedShell</Edition>
+      </VisualStudio>
+      <VisualStudio Version="12.0">
+        <Edition>Ultimate</Edition>
+        <Edition>Premium</Edition>
+        <Edition>Pro</Edition>
+        <Edition>IntegratedShell</Edition>
+      </VisualStudio>
+    </SupportedProducts>
+    <SupportedFrameworkRuntimeEdition MinVersion="4.0" />
+  </Identifier>
+  <References />
+
+  <Content>
+    <MefComponent>|Tvl.VisualStudio.Shell.OutputWindow.Implementation|</MefComponent>
+    <VsPackage>|%CurrentProject%|</VsPackage>
+  </Content>
+
+</Vsix>

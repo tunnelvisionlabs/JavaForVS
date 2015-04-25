@@ -1,0 +1,682 @@
+﻿tree grammar DebugExpressionEvaluatorWalker;
+
+options {
+	language=CSharp3;
+	ASTLabelType=CommonTree;
+	tokenVocab=Java2;
+}
+
+@namespace{Tvl.VisualStudio.Language.Java.Debugger}
+@modifier{internal}
+@ctorModifier{private}
+
+@header {
+using Tvl.Java.DebugInterface;
+using NotImplementedException = System.NotImplementedException;
+}
+
+compilationUnit
+	:	(annotations? packageDeclaration)?
+		importDeclaration*
+		typeDeclaration*
+		EOF
+	;
+
+packageDeclaration
+	:	^('package' qualifiedName)
+	;
+
+importDeclaration
+	:	^('import' 'static'? parts+=IDENTIFIER+ '*'?)
+	;
+
+typeDeclaration
+	:	classOrInterfaceDeclaration
+	;
+
+classOrInterfaceDeclaration
+	:	classDeclaration
+	|	interfaceDeclaration
+	;
+
+modifiers
+	:	(	annotation
+		|	'public'
+		|	'protected'
+		|	'private'
+		|	'static'
+		|	'abstract'
+		|	'final'
+		|	'native'
+		|	'synchronized'
+		|	'transient'
+		|	'volatile'
+		|	'strictfp'
+		)*
+	;
+
+variableModifiers
+	:	(   'final'
+		|	annotation
+		)*
+	;
+
+classDeclaration
+	:	normalClassDeclaration
+	|	enumDeclaration
+	;
+
+normalClassDeclaration
+	:	^(	CLASS_TYPE_IDENTIFIER
+			modifiers 'class'
+			typeParameters?
+			normalClassExtends?
+			implementsTypeList?
+			classBody
+		)
+	;
+
+normalClassExtends
+	:	^('extends' type)
+	;
+
+implementsTypeList
+	:	^('implements' typeList)
+	;
+
+extendsTypeList
+	:	^('extends' typeList)
+	;
+
+typeParameters
+	:	^('<' typeParameter+)
+	;
+
+typeParameter
+	:	^('extends' IDENTIFIER typeBound)
+	|	IDENTIFIER
+	;
+
+typeBound
+	:	type+
+	;
+
+enumDeclaration
+	:	^(	ENUM_TYPE_IDENTIFIER
+			modifiers 'enum'
+			implementsTypeList?
+			enumBody
+		)
+	;
+
+enumBody
+	:	^(	TYPE_BODY
+			enumConstants?
+			enumBodyDeclarations
+			'}'
+		)
+	;
+
+enumConstants
+	:	enumConstant+
+	;
+
+/**
+ * NOTE: here differs from the javac grammar, missing TypeArguments.
+ * EnumeratorDeclaration = AnnotationsOpt [TypeArguments] IDENTIFIER [ Arguments ] [ "{" ClassBody "}" ]
+ */
+enumConstant
+	:	^(	ENUM_CONSTANT_IDENTIFIER
+			annotations?
+			arguments?
+			classBody?
+		)
+		/* TODO: $GScope::name = names.empty. enum constant body is actually
+		an anonymous class, where constructor isn't allowed, have to add this check*/
+	;
+
+enumBodyDeclarations
+	:	classBodyDeclaration*
+	;
+
+interfaceDeclaration
+	:	normalInterfaceDeclaration
+	|	annotationTypeDeclaration
+	;
+
+normalInterfaceDeclaration
+	:	^(	INTERFACE_TYPE_IDENTIFIER
+			modifiers 'interface'
+			typeParameters?
+			extendsTypeList?
+			interfaceBody
+		)
+	;
+
+typeList
+	:	type+
+	;
+
+classBody
+	:	^(TYPE_BODY classBodyDeclaration* '}')
+	;
+
+interfaceBody
+	:	^(TYPE_BODY interfaceBodyDeclaration* '}')
+	;
+
+classBodyDeclaration
+	:	';'
+	|	staticBlock
+	|	block
+	|	memberDecl
+	;
+
+memberDecl
+	:	fieldDeclaration
+	|	methodDeclaration
+	|	classDeclaration
+	|	interfaceDeclaration
+	;
+
+methodDeclaration
+	:	^(	METHOD_IDENTIFIER
+			modifiers
+			typeParameters?
+			(	type
+			|	'void'
+			)? // not included for ctor
+			formalParameters
+			('[' ']')*
+			throwsSpec?
+			(   constructorMethodBody
+			|	';' 
+			)
+		)
+	;
+
+constructorMethodBody
+	:	^(	METHOD_BODY
+			explicitConstructorInvocation?
+			blockStatement*
+			'}'
+		)
+	;
+
+throwsSpec
+	:	^('throws' qualifiedNameList)
+	;
+
+fieldDeclaration
+	:	^(	FIELD_DECLARATION
+			modifiers
+			type
+			variableDeclarator+
+		)
+	;
+
+variableDeclarator
+	:	^(	VARIABLE_IDENTIFIER
+			('[' ']')*
+			('=' variableInitializer)?
+		)
+	;
+
+/**
+ *TODO: add predicates
+ */
+interfaceBodyDeclaration
+	:	interfaceFieldDeclaration
+	|	interfaceMethodDeclaration
+	|	interfaceDeclaration
+	|	classDeclaration
+	|	';'
+	;
+
+interfaceMethodDeclaration
+	:	^(	METHOD_IDENTIFIER
+			modifiers
+			typeParameters?
+			(	type
+			|	'void'
+			)
+			formalParameters
+			('[' ']')*
+			throwsSpec? ';'
+		)
+	;
+
+/**
+ * NOTE, should not use variableDeclarator here, as it doesn't necessary require
+ * an initializer, while an interface field does, or judge by the returned value.
+ * But this gives better diagnostic message, or antlr won't predict this rule.
+ */
+interfaceFieldDeclaration
+	:	^(	FIELD_DECLARATION
+			modifiers type variableDeclarator+
+		)
+	;
+
+type returns [IType evaluatedType]
+	:	classOrInterfaceType
+	|	primitiveType
+	|	^(ARRAY_TYPE type)
+	;
+
+classOrInterfaceType
+	:	^('.' classOrInterfaceType+)
+	|	genericIdentifier
+	;
+
+genericIdentifier
+	:	^(IDENTIFIER typeArguments)
+	|	IDENTIFIER
+	;
+
+primitiveType returns [string signature]
+	:	'boolean'	{$signature = "Z";}
+	|	'char'		{$signature = "C";}
+	|	'byte'		{$signature = "B";}
+	|	'short'		{$signature = "S";}
+	|	'int'		{$signature = "I";}
+	|	'long'		{$signature = "J";}
+	|	'float'		{$signature = "F";}
+	|	'double'	{$signature = "D";}
+	;
+
+typeArguments
+	:	^('<' typeArgument+)
+	;
+
+typeArgument
+	:	type
+	|	^(	'?'
+			(	('extends' | 'super')
+				type
+			)?
+		)
+	;
+
+qualifiedNameList
+	:	qualifiedName+
+	;
+
+formalParameters
+	:	^(FORMAL_PARAMETERS formalParameterDecls? ')')
+	;
+
+formalParameterDecls
+	:	normalParameterDecl+
+	;
+
+normalParameterDecl
+	:	^(PARAMETER_IDENTIFIER variableModifiers type (('[' ']')+ | '...')?)
+	;
+
+explicitConstructorInvocation
+	:	^(('this'|'super') nonWildcardTypeArguments? arguments ';')
+		//NOTE: the position of Identifier 'super' is set to the type args position here
+
+	|	^(	'super'
+			primary
+			'.'
+			nonWildcardTypeArguments?
+			arguments ';'
+		)
+	;
+
+qualifiedName
+	:	^('.' qualifiedName IDENTIFIER)
+	|	IDENTIFIER
+	;
+
+annotations
+	:	annotation+
+	;
+
+/**
+ *  Using an annotation. 
+ * '@' is flaged in modifier
+ */
+annotation
+	:	^(	'@' qualifiedName
+			(   '('   
+					  (   elementValuePairs
+					  |	elementValue
+					  )? 
+				')' 
+			)?
+		)
+	;
+
+elementValuePairs
+	:	elementValuePair (',' elementValuePair)*
+	;
+
+elementValuePair
+	:	^(IDENTIFIER '=' elementValue)
+	;
+
+elementValue
+	:	expression
+	|	annotation
+	|	elementValueArrayInitializer
+	;
+
+elementValueArrayInitializer
+	:	^(ARRAY_INITIALIZER
+			(elementValue (',' elementValue)* )?
+			','?
+		'}'
+		)
+	;
+
+
+/**
+ * Annotation declaration.
+ */
+annotationTypeDeclaration
+	:	^(	ANNOTATION_TYPE_IDENTIFIER
+			modifiers '@'
+			'interface'
+			annotationTypeBody
+		)
+	;
+
+
+annotationTypeBody
+	:	^('{' annotationTypeElementDeclaration* '}')
+	;
+
+/**
+ * NOTE: here use interfaceFieldDeclaration for field declared inside annotation. they are sytactically the same.
+ */
+annotationTypeElementDeclaration
+	:	annotationMethodDeclaration
+	|	interfaceFieldDeclaration
+	|	normalClassDeclaration
+	|	normalInterfaceDeclaration
+	|	enumDeclaration
+	|	annotationTypeDeclaration
+	|	';'
+	;
+
+annotationMethodDeclaration
+	:	^(	METHOD_IDENTIFIER
+			modifiers type
+			'(' ')' ('default' elementValue)?
+			';'
+		)
+	;
+
+block
+	:	^(BLOCK blockStatement* '}')
+	;
+
+staticBlock
+	:	^(STATIC_BLOCK 'static' blockStatement* '}')
+	;
+
+/*
+ * this could return a list or a tree, caller has to test null and use properly.
+ */
+blockStatement
+	:	localVariableDeclarationStatement
+	|	classOrInterfaceDeclaration
+	|	statement
+	;
+
+
+localVariableDeclarationStatement
+	:	^(LOCAL_DECLARATION localVariableDeclaration)
+	;
+
+localVariableDeclaration
+	:	variableModifiers type
+		variableDeclarator (',' variableDeclarator)*
+	;
+
+statement
+	:	block 
+
+	|	^('assert' expression (':' expression)? ';')
+
+	|	^('if' parExpression statement ('else' statement)?)
+	|	forstatement
+	|	^('while' parExpression statement)
+	|	^('do' statement 'while' parExpression ';')
+	|	trystatement
+	|	^('switch' parExpression '{' switchBlockStatementGroups '}')
+	|	^('synchronized' parExpression block)
+	|	^('return' expression? ';')
+	|	^('throw' expression ';')
+	|	^('break' IDENTIFIER? ';')
+	|	^('continue' IDENTIFIER? ';')
+	|	^(':' IDENTIFIER statement)
+	|	^(';' expression?)
+	;
+
+switchBlockStatementGroups
+	:	switchBlockStatementGroup*
+	;
+
+switchBlockStatementGroup
+	:	switchLabel blockStatement*
+	;
+
+switchLabel //returns [JCExpression tree]
+	:	^('case' expression ':')
+	|	^('default' ':')
+	;
+
+
+trystatement
+	:	^('try' block catches? finallyBlock?)
+	;
+
+finallyBlock
+	:	^('finally' block)
+	;
+
+catches
+	:	catchClause+
+	;
+
+catchClause
+	:	^('catch' formalParameter block)
+	;
+
+formalParameter
+	:	^(IDENTIFIER variableModifiers type ('[' ']')*)
+	;
+
+forstatement
+	:	// enhanced for loop
+		^(	FOREACH '(' variableModifiers type IDENTIFIER ':' expression ')'
+			statement
+		)
+
+	|	// normal for loop
+		^(	'for' '(' forInit? ';' expression? ';' expressionList? ')'
+			statement
+		)
+	;
+
+forInit
+	:	localVariableDeclaration
+	|	expressionList
+	;
+
+parExpression
+	:	^('(' expression)
+	;
+
+expressionList returns [List<EvaluatedExpression> values = new List<EvaluatedExpression>()]
+	:	(	expression	{$values.Add($expression.value);}
+		)+
+	;
+
+expression returns [EvaluatedExpression value]
+	:	^(assignmentOperator left=expression right=expression)					{throw new NotImplementedException();}
+	|	^('?' cond=expression trueValue=expression ':' falseValue=expression)	{$value = EvaluateTernary($cond.value, $trueValue.value, $falseValue.value);}
+	|	^(binaryOperator left=expression right=expression)						{$value = EvaluateBinary($binaryOperator.start, $left.value, $right.value);}
+	|	^(unaryOperator expr=expression)										{$value = EvaluateUnary($unaryOperator.start, $expr.value);}
+	|	^(	SELECTOR expr=expression
+			// inlined the 'selector' rule:
+			(	^('.' IDENTIFIER a=arguments?)									{$value = EvaluateCall(EvaluateMethod($expr.value, $IDENTIFIER, $a.values), $a.values);}
+			|	^('.' 'this')													{throw new NotImplementedException();}
+			|	^('.' 'super' superSuffix)										{throw new NotImplementedException();}
+			|	innerCreator													{throw new NotImplementedException();}
+			|	^('[' index=expression ']')										{$value = GetArrayElement($expr.value, $index.value);}
+			)
+		)
+	|	^('instanceof' expr=expression type)									{$value = EvaluateInstanceOf($expr.value, $type.evaluatedType);}
+	|	castExpression															{$value = $castExpression.value;}
+	|	primary																	{$value = $primary.value;}
+	;
+
+public
+standaloneExpression returns [EvaluatedExpression value]
+	:	expression EOF							{$value = $expression.value;}
+	;
+
+assignmentOperator
+	:	'='
+	|	'+='
+	|	'-='
+	|	'*='
+	|	'/='
+	|	'&='
+	|	'|='
+	|	'^='
+	|	'%='
+	|	LSHIFTEQ
+	|	URSHIFTEQ
+	|	RSHIFTEQ
+	;
+
+binaryOperator
+	:	'||' | '&&' | '|' | '^' | '&' | '==' | '!=' | LE | GE | '<' | '>' | LSHIFT | URSHIFT | RSHIFT | '+' | '-' | '*' | '/' | '%'
+	;
+
+unaryOperator
+	:	POSITIVE | NEGATE | PREINC | PREDEC | POSTINC | POSTDEC | '~' | '!'
+	;
+
+castExpression returns [EvaluatedExpression value]
+	:	^(EXPLICIT_CAST type expression)								{$value = CastExpression($expression.value, $type.evaluatedType);}
+	;
+
+primary returns [EvaluatedExpression value]
+	:	parExpression
+	|	^(QID qualifiedIdBody identifierSuffix[$qualifiedIdBody.parts])	{$value = $identifierSuffix.value;}
+	|	^('super' superSuffix)									{throw new NotImplementedException();}
+	|	literal													{$value = $literal.value;}
+	|	creator													{$value = $creator.value;}
+	|	^(	'.'
+			primitiveType										{$value = FindClass($primitiveType.signature);}
+			(	'[' ']'											{$value = GetArrayClass($value);}
+			)*
+			'class')
+	|	^('.' 'void' 'class')									{$value = FindClass("V");}
+	|	^(IDENTIFIER identifierSuffix[new[\] {$IDENTIFIER}])	{$value = $identifierSuffix.value;}
+	|	^(THIS identifierSuffix[new[\] {$THIS}])				{$value = $identifierSuffix.value;}
+	|	IDENTIFIER												{$value = GetValueInScope($IDENTIFIER.text);}
+	|	'this'													{$value = GetThisObject();}
+	;
+
+qualifiedIdBody returns [List<CommonTree> parts]
+	:	^(QID body=qualifiedIdBody) x=IDENTIFIER		{$parts = new List<CommonTree>($body.parts) { $x };}
+	|	x='this' y=IDENTIFIER							{$parts = new List<CommonTree>() { $x, $y };}
+	|	x=IDENTIFIER y=IDENTIFIER						{$parts = new List<CommonTree>() { $x, $y };}
+	;
+
+superSuffix
+	:	arguments
+	|	^('.' typeArguments? IDENTIFIER arguments?)
+	;
+
+/* The 'identifierSuffix' rule is now inlined in the 'primary' rule */
+identifierSuffix[IList<CommonTree> parts] returns [EvaluatedExpression value]
+	:	^('.' ('[' ']')+ 'class')								{throw new NotImplementedException();}
+	|	(	{$value = EvaluateTypeOrObject($parts);}
+			^('[' i=expression ']')								{$value = GetArrayElement($value, $i.value);}
+		)+
+	|	a=arguments												{$value = EvaluateCall(EvaluateMethod($parts, $a.values), $a.values);}
+	|	^('.' 'class')											{throw new NotImplementedException();}
+	|	^('.' nonWildcardTypeArguments IDENTIFIER a=arguments)	{throw new NotImplementedException();}
+	|	^('.' 'this')											{throw new NotImplementedException();}
+	|	^('.' 'super' a=arguments)								{throw new NotImplementedException();}
+	|	innerCreator											{throw new NotImplementedException();}
+	|	/* no identifier suffix */								{$value = EvaluateTypeOrObject($parts);}
+	;
+
+selector
+	:	^('.' IDENTIFIER arguments?)
+	|	^('.' 'this')
+	|	^('.' 'super' superSuffix)
+	|	innerCreator
+	|	^('[' expression ']')
+	;
+
+creator returns [EvaluatedExpression value]
+	:	^('new' nonWildcardTypeArguments classOrInterfaceType classCreatorRest)		{throw new NotImplementedException();}
+	|	^('new' classOrInterfaceType classCreatorRest)								{throw new NotImplementedException();}
+	|	arrayCreator																{throw new NotImplementedException();}
+	;
+
+arrayCreator
+	:	^(NEW_ARRAY createdName '[' expression? ']' ('[' expression? ']')* arrayInitializer?)
+	;
+
+variableInitializer
+	:	arrayInitializer
+	|	expression
+	;
+
+arrayInitializer
+	:	^(	ARRAY_INITIALIZER
+				variableInitializer*
+			'}'
+		)
+	;
+
+createdName
+	:	classOrInterfaceType
+	|	primitiveType
+	;
+
+innerCreator
+	:	^('new' '.'
+		nonWildcardTypeArguments?
+		IDENTIFIER
+		typeArguments?
+		classCreatorRest
+		)
+	;
+
+classCreatorRest
+	:	arguments classBody?
+	;
+
+
+nonWildcardTypeArguments
+	:	^('<' typeList '>')
+	;
+
+arguments returns [List<EvaluatedExpression> values]
+	:	^(ARGUMENT_LIST expressionList? ')')
+		{$values = $expressionList.values ?? new List<EvaluatedExpression>();}
+	;
+
+literal returns [EvaluatedExpression value]
+	:	INTLITERAL			{$value = GetIntLiteral($INTLITERAL.text);}
+	|	LONGLITERAL			{$value = GetLongLiteral($LONGLITERAL.text);}
+	|	FLOATLITERAL		{$value = GetFloatLiteral($FLOATLITERAL.text);}
+	|	DOUBLELITERAL		{$value = GetDoubleLiteral($DOUBLELITERAL.text);}
+	|	CHARLITERAL			{$value = GetCharLiteral($CHARLITERAL.text);}
+	|	STRINGLITERAL		{$value = GetStringLiteral($STRINGLITERAL.text);}
+	|	TRUE				{$value = GetBooleanLiteral(true);}
+	|	FALSE				{$value = GetBooleanLiteral(false);}
+	|	NULL				{$value = null;}
+	;

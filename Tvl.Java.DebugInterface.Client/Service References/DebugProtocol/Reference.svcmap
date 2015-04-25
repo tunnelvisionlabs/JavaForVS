@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="8c6a8f56-53f9-4caf-9d56-2fadea0743fa" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" Protocol="mex" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="7187f57a-b11e-4984-bd3a-7d579f3608bd" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="afe10450-2c78-47d2-a6ed-68936dd5e167" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="b4635cb5-0d77-4e68-aeb6-088825735954" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+    <MetadataFile FileName="Tvl.Java.DebugInterface.Types.xsd" MetadataType="Schema" ID="94455bb3-6453-4638-9b2a-ac4d9ae02bfa" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+    <MetadataFile FileName="Arrays.xsd" MetadataType="Schema" ID="02a3aefd-e6d3-42d2-8c76-c62a0333c732" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+    <MetadataFile FileName="Tvl.Java.DebugInterface.Types.Loader.xsd" MetadataType="Schema" ID="c08a3843-4f18-44e6-8f8e-e45b5b6bd9fe" SourceId="1" SourceUrl="http://localhost:8732/Design_Time_Addresses/Tvl.Java.DebugHost/DebugProtocolService/mex" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Tvl.Java.DebugInterface.Types.Loader" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Tvl.Java.DebugInterface.Types.Loader" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:complexType name="ArrayOfExceptionTableEntry">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="ExceptionTableEntry" nillable="true" type="tns:ExceptionTableEntry" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfExceptionTableEntry" nillable="true" type="tns:ArrayOfExceptionTableEntry" />
+  <xs:complexType name="ExceptionTableEntry">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="_catchType" type="xs:unsignedShort" />
+      <xs:element minOccurs="0" name="_endPc" type="xs:unsignedShort" />
+      <xs:element minOccurs="0" name="_handlerPc" type="xs:unsignedShort" />
+      <xs:element minOccurs="0" name="_startPc" type="xs:unsignedShort" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ExceptionTableEntry" nillable="true" type="tns:ExceptionTableEntry" />
+</xs:schema>

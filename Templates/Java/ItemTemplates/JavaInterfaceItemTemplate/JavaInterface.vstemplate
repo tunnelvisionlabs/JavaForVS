@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<VSTemplate Version="3.0.0" Type="Item" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+  <TemplateData>
+    <Name>Interface</Name>
+    <Description>An empty interface definition</Description>
+    <Icon>JavaInterfaceItemTemplate.ico</Icon>
+    <TemplateID>fba4dded-32ed-4e92-83a5-081d669ee139</TemplateID>
+    <ProjectType>Java</ProjectType>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
+    <DefaultName>Interface.java</DefaultName>
+  </TemplateData>
+  <TemplateContent>
+    <ProjectItem ReplaceParameters="true">Interface.java</ProjectItem>
+  </TemplateContent>
+</VSTemplate>

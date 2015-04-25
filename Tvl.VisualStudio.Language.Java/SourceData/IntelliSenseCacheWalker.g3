@@ -1,0 +1,754 @@
+﻿tree grammar IntelliSenseCacheWalker;
+
+options {
+	language=CSharp3;
+	ASTLabelType=CommonTree;
+	tokenVocab=Java2;
+}
+
+scope FileScope
+{
+	CodeFileBuilder FileBuilder;
+}
+
+scope TypeContainerScope
+{
+	ITypeBuilderContainer TypeBuilderContainer;
+}
+
+scope TypeScope
+{
+	CodeTypeBuilder TypeBuilder;
+}
+
+scope MethodScope
+{
+	CodeMethodBuilder MethodBuilder;
+}
+
+scope ModifierScope
+{
+	int dummy;
+}
+
+@namespace{Tvl.VisualStudio.Language.Java.SourceData}
+@header {
+using System.Linq;
+using Tvl.VisualStudio.Language.Java.SourceData.Emit;
+using ArgumentNullException = System.ArgumentNullException;
+}
+
+public
+compilationUnit[CodeFileBuilder fileBuilder]
+scope FileScope;
+scope TypeContainerScope;
+@init {
+if (fileBuilder == null)
+	throw new ArgumentNullException("fileBuilder");
+
+$FileScope::FileBuilder = fileBuilder;
+$TypeContainerScope::TypeBuilderContainer = fileBuilder;
+}
+	:	(annotations? packageDeclaration)?
+		importDeclaration*
+		typeDeclaration*
+		EOF
+	;
+
+packageDeclaration
+	:	^('package' qualifiedName)
+		{$FileScope::FileBuilder.DefinePackageStatement($qualifiedName.text, GetSourceInterval($start), GetSourceInterval($qualifiedName.start));}
+	;
+
+importDeclaration
+	:	^('import' isStatic='static'? parts+=IDENTIFIER+ isWildcard='*'?)
+		{
+			var import = $FileScope::FileBuilder.DefineImport(string.Join(".", $parts.Select(i => i.Text)), GetSourceInterval($start), GetSourceInterval($parts));
+			if ($isStatic != null)
+				import.IsStatic = true;
+			if ($isWildcard != null)
+				import.IsWildcard = true;
+		}
+	;
+
+typeDeclaration
+	:	classOrInterfaceDeclaration
+	;
+
+classOrInterfaceDeclaration
+	:	classDeclaration
+	|	interfaceDeclaration
+	;
+
+modifiers
+	:	(	annotation
+		|	'public'
+		|	'protected'
+		|	'private'
+		|	'static'
+		|	'abstract'
+		|	'final'
+		|	'native'
+		|	'synchronized'
+		|	'transient'
+		|	'volatile'
+		|	'strictfp'
+		)*
+	;
+
+variableModifiers
+    :   (   'final'
+        |   annotation
+        )*
+    ;
+
+classDeclaration
+	:	normalClassDeclaration
+	|	enumDeclaration
+	;
+
+normalClassDeclaration
+scope TypeScope;
+scope TypeContainerScope;
+scope ModifierScope;
+	:	^(	name=CLASS_TYPE_IDENTIFIER
+			{
+				$TypeScope::TypeBuilder = $TypeContainerScope[-1]::TypeBuilderContainer.DefineClass($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers 'class'
+			typeParameters?
+			normalClassExtends?
+			implementsTypeList?
+			classBody
+		)
+	;
+
+normalClassExtends
+	:	^('extends' type)
+	;
+
+implementsTypeList
+	:	^('implements' typeList)
+	;
+
+extendsTypeList
+	:	^('extends' typeList)
+	;
+
+typeParameters
+    :   ^('<' typeParameter+)
+    ;
+
+typeParameter
+    :   ^('extends' IDENTIFIER typeBound)
+	|	IDENTIFIER
+    ;
+
+typeBound
+    :   type+
+    ;
+
+enumDeclaration
+scope TypeScope;
+scope TypeContainerScope;
+scope ModifierScope;
+    :   ^(	name=ENUM_TYPE_IDENTIFIER
+			{
+				$TypeScope::TypeBuilder = $TypeContainerScope[-1]::TypeBuilderContainer.DefineEnum($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers 'enum'
+			implementsTypeList?
+			enumBody
+		)
+    ;
+
+enumBody
+	:	^(	TYPE_BODY
+			enumConstants?
+			enumBodyDeclarations
+			'}'
+		)
+	;
+
+enumConstants
+    :   enumConstant+
+    ;
+
+/**
+ * NOTE: here differs from the javac grammar, missing TypeArguments.
+ * EnumeratorDeclaration = AnnotationsOpt [TypeArguments] IDENTIFIER [ Arguments ] [ "{" ClassBody "}" ]
+ */
+enumConstant
+    :   ^(	ENUM_CONSTANT_IDENTIFIER
+			annotations?
+			arguments?
+			classBody?
+		)
+        /* TODO: $GScope::name = names.empty. enum constant body is actually
+        an anonymous class, where constructor isn't allowed, have to add this check*/
+    ;
+
+enumBodyDeclarations
+	:	classBodyDeclaration*
+	;
+
+interfaceDeclaration
+	:	normalInterfaceDeclaration
+	|	annotationTypeDeclaration
+	;
+
+normalInterfaceDeclaration
+scope TypeScope;
+scope TypeContainerScope;
+scope ModifierScope;
+    :   ^(	name=INTERFACE_TYPE_IDENTIFIER
+			{
+				$TypeScope::TypeBuilder = $TypeContainerScope[-1]::TypeBuilderContainer.DefineInterface($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers 'interface'
+			typeParameters?
+			extendsTypeList?
+			interfaceBody
+		)
+    ;
+
+typeList
+    :   type+
+    ;
+
+classBody
+    :   ^(TYPE_BODY classBodyDeclaration* '}')
+    ;
+
+interfaceBody
+    :   ^(TYPE_BODY interfaceBodyDeclaration* '}')
+    ;
+
+classBodyDeclaration
+    :   ';'
+    |   staticBlock
+    |   block
+    |   memberDecl
+    ;
+
+memberDecl
+    :   fieldDeclaration
+    |   methodDeclaration
+    |   classDeclaration
+    |   interfaceDeclaration
+    ;
+
+methodDeclaration
+scope ModifierScope;
+scope MethodScope;
+	:	^(	name=METHOD_IDENTIFIER
+			{
+				$MethodScope::MethodBuilder = $TypeScope::TypeBuilder.DefineMethod($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				//$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers
+			typeParameters?
+			(	type
+			|	'void'
+			)? // not included for ctor
+			formalParameters
+			('[' ']')*
+			throwsSpec?
+			(   constructorMethodBody
+			|   ';' 
+			)
+		)
+    ;
+
+constructorMethodBody
+	:   ^(	METHOD_BODY
+			explicitConstructorInvocation?
+			blockStatement*
+			'}'
+		)
+	;
+
+throwsSpec
+	:	^('throws' qualifiedNameList)
+	;
+
+fieldDeclaration
+scope ModifierScope;
+    :   ^(	FIELD_DECLARATION
+			modifiers
+			type
+			variableDeclarator+
+		)
+    ;
+
+variableDeclarator
+	:	^(	VARIABLE_IDENTIFIER
+			('[' ']')*
+			('=' variableInitializer)?
+		)
+    ;
+
+/**
+ *TODO: add predicates
+ */
+interfaceBodyDeclaration
+    :   interfaceFieldDeclaration
+    |   interfaceMethodDeclaration
+    |   interfaceDeclaration
+    |   classDeclaration
+    |   ';'
+    ;
+
+interfaceMethodDeclaration
+scope ModifierScope;
+scope MethodScope;
+	:	^(	name=METHOD_IDENTIFIER
+			{
+				$MethodScope::MethodBuilder = $TypeScope::TypeBuilder.DefineMethod($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				//$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers
+			typeParameters?
+			(	type
+			|	'void'
+			)
+			formalParameters
+			('[' ']')*
+			throwsSpec? ';'
+		)
+    ;
+
+/**
+ * NOTE, should not use variableDeclarator here, as it doesn't necessary require
+ * an initializer, while an interface field does, or judge by the returned value.
+ * But this gives better diagnostic message, or antlr won't predict this rule.
+ */
+interfaceFieldDeclaration
+scope ModifierScope;
+	:	^(	FIELD_DECLARATION
+			modifiers type variableDeclarator+
+		)
+	;
+
+type
+	:	classOrInterfaceType
+	|	primitiveType
+	|	^(ARRAY_TYPE type)
+	;
+
+classOrInterfaceType
+    :   ^('.' classOrInterfaceType+)
+	|	genericIdentifier
+    ;
+
+genericIdentifier
+	:	^(IDENTIFIER typeArguments)
+	|	IDENTIFIER
+	;
+
+primitiveType
+    :   'boolean'
+    |   'char'
+    |   'byte'
+    |   'short'
+    |   'int'
+    |   'long'
+    |   'float'
+    |   'double'
+    ;
+
+typeArguments
+    :   ^('<' typeArgument*)
+    ;
+
+typeArgument
+    :   type
+    |   ^(	'?'
+			(	('extends' | 'super')
+				type
+			)?
+		)
+    ;
+
+qualifiedNameList
+    :   qualifiedName+
+    ;
+
+formalParameters
+    :   ^(FORMAL_PARAMETERS formalParameterDecls? ')')
+    ;
+
+formalParameterDecls
+	:	normalParameterDecl+
+	;
+
+normalParameterDecl
+	:	^(name=PARAMETER_IDENTIFIER variableModifiers type (('[' ']')+ | '...')?)
+		{$MethodScope::MethodBuilder.DefineParameter($name.text, GetSourceInterval($start), GetSourceInterval($name));}
+	;
+
+explicitConstructorInvocation
+	:	^(('this'|'super') nonWildcardTypeArguments? arguments ';')
+		//NOTE: the position of Identifier 'super' is set to the type args position here
+
+	|	^(	'super'
+			primary
+			'.'
+			nonWildcardTypeArguments?
+			arguments ';'
+		)
+	;
+
+qualifiedName
+	:	^('.' qualifiedName IDENTIFIER)
+	|	IDENTIFIER
+	;
+
+annotations
+    :   annotation+
+    ;
+
+
+/**
+ *  Using an annotation. 
+ * '@' is flaged in modifier
+ */
+annotation
+    :   ^(	'@' qualifiedName
+			(   '('   
+					  (   elementValuePairs
+					  |   elementValue
+					  )? 
+				')' 
+			)?
+		)
+    ;
+
+elementValuePairs
+    :   elementValuePair (',' elementValuePair)*
+    ;
+
+elementValuePair
+    :   ^(IDENTIFIER '=' elementValue)
+    ;
+
+elementValue
+    :   expression
+    |   annotation
+    |   elementValueArrayInitializer
+    ;
+
+elementValueArrayInitializer
+    :   ^(ARRAY_INITIALIZER
+			(elementValue (',' elementValue)* )?
+			','?
+		'}'
+		)
+    ;
+
+
+/**
+ * Annotation declaration.
+ */
+annotationTypeDeclaration
+scope TypeScope;
+scope TypeContainerScope;
+scope ModifierScope;
+    :   ^(	name=ANNOTATION_TYPE_IDENTIFIER
+			{
+				$TypeScope::TypeBuilder = $TypeContainerScope[-1]::TypeBuilderContainer.DefineAnnotationInterface($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers '@'
+			'interface'
+			annotationTypeBody
+		)
+    ;
+
+
+annotationTypeBody
+    :   ^('{' annotationTypeElementDeclaration* '}')
+    ;
+
+/**
+ * NOTE: here use interfaceFieldDeclaration for field declared inside annotation. they are sytactically the same.
+ */
+annotationTypeElementDeclaration
+    :   annotationMethodDeclaration
+    |   interfaceFieldDeclaration
+    |   normalClassDeclaration
+    |   normalInterfaceDeclaration
+    |   enumDeclaration
+    |   annotationTypeDeclaration
+    |   ';'
+    ;
+
+annotationMethodDeclaration
+scope MethodScope;
+scope ModifierScope;
+	:	^(	name=METHOD_IDENTIFIER
+			{
+				$MethodScope::MethodBuilder = $TypeScope::TypeBuilder.DefineMethod($name.text, GetSourceInterval($start), GetSourceInterval($name));
+				//$TypeContainerScope::TypeBuilderContainer = $TypeScope::TypeBuilder;
+			}
+			modifiers type
+			'(' ')' ('default' elementValue)?
+			';'
+		)
+	;
+
+block
+    :   ^(BLOCK blockStatement* '}')
+    ;
+
+staticBlock
+    :   ^(STATIC_BLOCK 'static' blockStatement* '}')
+    ;
+
+/*
+ * this could return a list or a tree, caller has to test null and use properly.
+ */
+blockStatement
+    :   localVariableDeclarationStatement
+    |   classOrInterfaceDeclaration
+    |   statement
+    ;
+
+
+localVariableDeclarationStatement
+    :   ^(LOCAL_DECLARATION localVariableDeclaration)
+    ;
+
+localVariableDeclaration
+    :   variableModifiers type
+        variableDeclarator (',' variableDeclarator)*
+    ;
+
+statement
+    :   block 
+
+    |   ^('assert' expression (':' expression)? ';')
+
+    |   ^('if' parExpression statement ('else' statement)?)
+    |   forstatement
+    |   ^('while' parExpression statement)
+    |   ^('do' statement 'while' parExpression ';')
+    |   trystatement
+    |   ^('switch' parExpression '{' switchBlockStatementGroups '}')
+    |   ^('synchronized' parExpression block)
+    |   ^('return' expression? ';')
+    |   ^('throw' expression ';')
+    |   ^('break' IDENTIFIER? ';')
+    |   ^('continue' IDENTIFIER? ';')
+    |   ^(':' IDENTIFIER statement)
+    |   ^(';' expression?)
+    ;
+
+switchBlockStatementGroups
+    :   switchBlockStatementGroup*
+    ;
+
+switchBlockStatementGroup
+    :   switchLabel blockStatement*
+    ;
+
+switchLabel //returns [JCExpression tree]
+    :   ^('case' expression ':')
+    |   ^('default' ':')
+    ;
+
+
+trystatement
+	:	^('try' block catches? finallyBlock?)
+	;
+
+finallyBlock
+	:	^('finally' block)
+	;
+
+catches
+    :   catchClause+
+    ;
+
+catchClause
+    :   ^('catch' formalParameter block)
+    ;
+
+formalParameter
+    :   ^(IDENTIFIER variableModifiers type ('[' ']')*)
+    ;
+
+forstatement
+    :   // enhanced for loop
+        ^(	FOREACH '(' variableModifiers type IDENTIFIER ':' expression ')'
+			statement
+		)
+
+    |   // normal for loop
+        ^(	'for' '(' forInit? ';' expression? ';' expressionList? ')'
+			statement
+		)
+    ;
+
+forInit
+    :   localVariableDeclaration
+    |   expressionList
+    ;
+
+parExpression
+    :   ^('(' expression)
+    ;
+
+expressionList
+    :   expression+
+    ;
+
+
+expression
+    :   ^(assignmentOperator expression expression)
+	|	^('?' expression expression ':' expression)
+	|	^(binaryOperator expression expression)
+	|	^(unaryOperator expression)
+	|	^(SELECTOR expression selector)
+	|	^('instanceof' expression type)
+	|	castExpression
+	|	primary
+    ;
+
+
+assignmentOperator
+    :   '='
+    |   '+='
+    |   '-='
+    |   '*='
+    |   '/='
+    |   '&='
+    |   '|='
+    |   '^='
+    |   '%='
+    |   LSHIFTEQ
+    |   URSHIFTEQ
+    |   RSHIFTEQ
+    ;
+
+binaryOperator
+	:	'||' | '&&' | '|' | '^' | '&' | '==' | '!=' | LE | GE | '<' | '>' | LSHIFT | URSHIFT | RSHIFT | '+' | '-' | '*' | '/' | '%'
+	;
+
+unaryOperator
+	:	POSITIVE | NEGATE | PREINC | PREDEC | POSTINC | POSTDEC | '~' | '!'
+	;
+
+castExpression
+	:	^(EXPLICIT_CAST type expression)
+	;
+
+/**
+ * have to use scope here, parameter passing isn't well supported in antlr.
+ */
+primary
+    :   parExpression
+    //|   ^('this' ('.' IDENTIFIER)* identifierSuffix?)
+    //|   ^(IDENTIFIER ('.' IDENTIFIER)* identifierSuffix?)
+	|	^(QID primary IDENTIFIER identifierSuffix?)
+    |   ^('this' identifierSuffix?)
+    |   ^(IDENTIFIER identifierSuffix?)
+    |   ^('super' superSuffix)
+    |   literal
+    |   creator
+    |   ^('.' primitiveType ('[' ']')* 'class')
+    |   ^('.' 'void' 'class')
+	|	IDENTIFIER
+	|	'this'
+    ;
+
+
+superSuffix
+    :   arguments
+    |   ^('.' typeArguments? IDENTIFIER arguments?)
+    ;
+
+identifierSuffix
+    :   ^('.' ('[' ']')+ 'class')
+    |   (^('[' expression ']'))+
+    |   arguments
+    |   ^('.' 'class')
+    |   ^('.' nonWildcardTypeArguments IDENTIFIER arguments)
+    |   ^('.' 'this')
+    |   ^('.' 'super' arguments)
+    |   innerCreator
+    ;
+
+selector
+    :   ^('.' IDENTIFIER arguments?)
+    |   ^('.' 'this')
+    |   ^('.' 'super' superSuffix)
+    |   innerCreator
+    |   ^('[' expression ']')
+    ;
+
+creator
+    :   ^('new' nonWildcardTypeArguments classOrInterfaceType classCreatorRest)
+    |   ^('new' classOrInterfaceType classCreatorRest)
+    |   arrayCreator
+    ;
+
+arrayCreator
+    :   ^(NEW_ARRAY createdName '[' expression? ']' ('[' expression? ']')* arrayInitializer?)
+    ;
+
+variableInitializer
+    :   arrayInitializer
+    |   expression
+    ;
+
+arrayInitializer
+    :   ^(	ARRAY_INITIALIZER
+				variableInitializer*
+			'}'
+		)
+    ;
+
+
+createdName
+    :   classOrInterfaceType
+    |   primitiveType
+    ;
+
+innerCreator
+    :   ^('new' '.'
+        nonWildcardTypeArguments?
+        IDENTIFIER
+        typeArguments?
+        classCreatorRest
+		)
+    ;
+
+
+classCreatorRest
+    :   arguments classBody?
+    ;
+
+
+nonWildcardTypeArguments
+    :   ^('<' typeList '>')
+    ;
+
+arguments
+    :   ^(ARGUMENT_LIST expressionList? ')')
+    ;
+
+literal
+    :   INTLITERAL
+    |   LONGLITERAL
+    |   FLOATLITERAL
+    |   DOUBLELITERAL
+    |   CHARLITERAL
+    |   STRINGLITERAL
+    |   TRUE
+    |   FALSE
+    |   NULL
+    ;

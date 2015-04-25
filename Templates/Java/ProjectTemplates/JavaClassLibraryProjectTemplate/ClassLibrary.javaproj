@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>$guid1$</ProjectGuid>
+    <OutputType>jar</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>$safeprojectname$</RootNamespace>
+    <AssemblyName>$safeprojectname$</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <SourceRelease>Default</SourceRelease>
+    <TargetRelease>Default</TargetRelease>
+    <TargetVM>Hotspot</TargetVM>
+    <SourceEncoding />
+    <DebugSymbols>All</DebugSymbols>
+    <SpecificDebugSymbols />
+    <ShowWarnings>True</ShowWarnings>
+    <ShowAllWarnings>True</ShowAllWarnings>
+    <TreatWarningsAsErrors>None</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <OutputPath>bin\Debug\</OutputPath>
+    <BuildArgs />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <SourceRelease>Default</SourceRelease>
+    <TargetRelease>Default</TargetRelease>
+    <TargetVM>Hotspot</TargetVM>
+    <SourceEncoding />
+    <DebugSymbols>Default</DebugSymbols>
+    <SpecificDebugSymbols />
+    <ShowWarnings>True</ShowWarnings>
+    <ShowAllWarnings>True</ShowAllWarnings>
+    <TreatWarningsAsErrors>None</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <OutputPath>bin\Release\</OutputPath>
+    <BuildArgs />
+  </PropertyGroup>
+  <ItemGroup>
+    <SourceFolder Include="src\main\java\" />
+    <None Include="**\*.*" Exclude="bin\**\*.*;obj\**\*.*;out\**\*.*;*.user;*.javaproj;*.vspscc;*.vsscc;*.vssscc" />
+  </ItemGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+
+</Project>
