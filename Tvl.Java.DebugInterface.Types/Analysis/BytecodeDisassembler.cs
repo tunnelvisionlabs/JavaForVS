@@ -364,6 +364,19 @@
                 default:
                     throw new FormatException();
                 }
+
+                if (workQueue.Count == 0)
+                {
+                    for (int i = 0; i < depths.Length; i++)
+                    {
+                        if (depths[i].HasValue)
+                            continue;
+
+                        depths[i] = 1;
+                        workQueue.Enqueue(i);
+                        break;
+                    }
+                }
             }
 
             return new ImmutableList<int?>(depths);

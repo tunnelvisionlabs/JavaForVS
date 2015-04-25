@@ -267,7 +267,24 @@
 
         public Error GetCapabilities(out Capabilities capabilities)
         {
-            throw new NotImplementedException();
+            capabilities = default(Capabilities);
+
+            JniEnvironment nativeEnvironment;
+            JvmtiEnvironment environment;
+            jvmtiError error = GetEnvironment(out environment, out nativeEnvironment);
+            if (error != jvmtiError.None)
+                return GetStandardError(error);
+
+            jvmtiCapabilities jvmCapabilities;
+            error = Environment.GetCapabilities(out jvmCapabilities);
+            if (error != jvmtiError.None)
+                return GetStandardError(error);
+
+            ulong capabilityValue = (ulong)jvmCapabilities.Capabilities1 | ((ulong)jvmCapabilities.Capabilities2 << 32);
+            capabilities = (Capabilities)capabilityValue
+                | Capabilities.CanStepByStatement
+                | Capabilities.CanInvokeWithoutThread;
+            return GetStandardError(error);
         }
 
         public Error GetClassPaths(out string baseDirectory, out string[] classPaths, out string[] bootClassPaths)

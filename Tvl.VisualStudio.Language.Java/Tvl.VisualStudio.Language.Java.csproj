@@ -230,6 +230,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -472,6 +473,7 @@
     <Compile Include="Project\JavaProjectPackage.cs" />
     <Compile Include="Project\JavaReferenceContainerNode.cs" />
     <Compile Include="Project\NativeMethods.cs" />
+    <Compile Include="Project\PropertyPages\DebugAgent.cs" />
     <Compile Include="Project\PropertyPages\JavaApplicationPropertyPage.cs" />
     <Compile Include="Project\PropertyPages\JavaApplicationPropertyPagePanel.cs">
       <SubType>UserControl</SubType>

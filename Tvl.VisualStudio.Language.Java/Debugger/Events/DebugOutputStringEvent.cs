@@ -11,8 +11,8 @@
     {
         private readonly string _message;
 
-        public DebugOutputStringEvent(enum_EVENTATTRIBUTES attributes, string message)
-            : base(attributes)
+        public DebugOutputStringEvent(string message)
+            : base(enum_EVENTATTRIBUTES.EVENT_ASYNCHRONOUS)
         {
             Contract.Requires<ArgumentNullException>(message != null, "message");
 

@@ -166,6 +166,16 @@
             throw new NotImplementedException();
         }
 
+        public bool GetCanStepByStatement()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool GetCanInvokeWithoutThread()
+        {
+            throw new NotImplementedException();
+        }
+
         public ReadOnlyCollection<IReferenceType> GetClassesByName(string className)
         {
             throw new NotImplementedException();

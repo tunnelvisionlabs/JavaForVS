@@ -111,11 +111,51 @@
         {
             Types.Value returnValue;
             TaggedObjectId thrownException;
-            ThreadId threadId = (thread != null) ? ((ThreadReference)thread).ThreadId : default(ThreadId);
-            DebugErrorHandler.ThrowOnFailure(VirtualMachine.ProtocolService.InvokeObjectMethod(out returnValue, out thrownException, ObjectId, threadId, (ClassId)((Method)method).DeclaringType.TaggedReferenceTypeId, ((Method)method).MethodId, (Types.InvokeOptions)options, arguments.Cast<Value>().Select(Value.ToNetworkValue).ToArray()));
-            if (thrownException != default(TaggedObjectId))
+            if (thread != null || VirtualMachine.GetCanInvokeWithoutThread())
             {
-                throw new NotImplementedException();
+                ThreadId threadId = default(ThreadId);
+                if (thread != null)
+                    threadId = ((ThreadReference)thread).ThreadId;
+
+                DebugErrorHandler.ThrowOnFailure(VirtualMachine.ProtocolService.InvokeObjectMethod(out returnValue, out thrownException, ObjectId, threadId, (ClassId)((Method)method).DeclaringType.TaggedReferenceTypeId, ((Method)method).MethodId, (Types.InvokeOptions)options, arguments.Cast<Value>().Select(Value.ToNetworkValue).ToArray()));
+            }
+            else
+            {
+                returnValue = default(Types.Value);
+                thrownException = default(TaggedObjectId);
+                Error errorCode = Error.ThreadNotSuspended;
+
+                foreach (var vmThread in VirtualMachine.GetAllThreads())
+                {
+                    ThreadReference threadReference = vmThread as ThreadReference;
+                    if (threadReference == null)
+                        continue;
+
+                    ThreadStatus threadStatus;
+                    SuspendStatus suspendStatus;
+                    DebugErrorHandler.ThrowOnFailure(VirtualMachine.ProtocolService.GetThreadStatus(out threadStatus, out suspendStatus, threadReference.ThreadId));
+                    if (threadStatus != ThreadStatus.Running)
+                        continue;
+
+                    if (suspendStatus != SuspendStatus.Suspended)
+                        continue;
+
+                    int suspendCount;
+                    DebugErrorHandler.ThrowOnFailure(VirtualMachine.ProtocolService.GetThreadSuspendCount(out suspendCount, threadReference.ThreadId));
+
+                    errorCode = VirtualMachine.ProtocolService.InvokeObjectMethod(out returnValue, out thrownException, ObjectId, threadReference.ThreadId, (ClassId)((Method)method).DeclaringType.TaggedReferenceTypeId, ((Method)method).MethodId, (Types.InvokeOptions)options, arguments.Cast<Value>().Select(Value.ToNetworkValue).ToArray());
+                    if (errorCode == Error.InvalidThread)
+                        continue;
+
+                    break;
+                }
+
+                DebugErrorHandler.ThrowOnFailure(errorCode);
+            }
+
+            if (thrownException.ObjectId != default(ObjectId))
+            {
+                throw new InternalException((int)Error.Internal, "An exception was thrown by the invoked method.");
             }
 
             Value returnValueMirror = VirtualMachine.GetMirrorOf(returnValue);

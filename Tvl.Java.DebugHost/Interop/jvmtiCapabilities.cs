@@ -22,6 +22,38 @@ namespace Tvl.Java.DebugHost.Interop
             _flags4 = flags4;
         }
 
+        public CapabilityFlags1 Capabilities1
+        {
+            get
+            {
+                return _flags1;
+            }
+        }
+
+        public CapabilityFlags2 Capabilities2
+        {
+            get
+            {
+                return _flags2;
+            }
+        }
+
+        public CapabilityFlags3 Capabilities3
+        {
+            get
+            {
+                return _flags3;
+            }
+        }
+
+        public CapabilityFlags4 Capabilities4
+        {
+            get
+            {
+                return _flags4;
+            }
+        }
+
         public bool CanTagObjects
         {
             get

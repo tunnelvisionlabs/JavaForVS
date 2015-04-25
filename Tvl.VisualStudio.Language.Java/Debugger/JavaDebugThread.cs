@@ -208,10 +208,18 @@ namespace Tvl.VisualStudio.Language.Java.Debugger
             if (_getIdMethod == null)
                 return VSConstants.E_FAIL;
 
-            using (var result = _thread.InvokeMethod(null, _getIdMethod, InvokeOptions.None))
+            try
             {
-                pdwThreadId = (uint)((ILongValue)result.Value).GetValue();
-                return VSConstants.S_OK;
+                using (var result = _thread.InvokeMethod(null, _getIdMethod, InvokeOptions.SingleThreaded))
+                {
+                    pdwThreadId = (uint)((ILongValue)result.Value).GetValue();
+                    return VSConstants.S_OK;
+                }
+            }
+            catch (DebuggerException)
+            {
+                pdwThreadId = 0;
+                return VSConstants.E_FAIL;
             }
         }
 
@@ -232,10 +240,18 @@ namespace Tvl.VisualStudio.Language.Java.Debugger
             if (_getPriorityMethod == null)
                 return VSConstants.E_FAIL;
 
-            using (var result = _thread.InvokeMethod(null, _getPriorityMethod, InvokeOptions.None))
+            try
             {
-                priorityId = ((IIntegerValue)result.Value).GetValue();
-                return VSConstants.S_OK;
+                using (var result = _thread.InvokeMethod(null, _getPriorityMethod, InvokeOptions.SingleThreaded))
+                {
+                    priorityId = ((IIntegerValue)result.Value).GetValue();
+                    return VSConstants.S_OK;
+                }
+            }
+            catch (DebuggerException)
+            {
+                priorityId = 0;
+                return VSConstants.E_FAIL;
             }
         }
 

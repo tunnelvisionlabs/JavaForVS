@@ -13,9 +13,7 @@
             Contract.Requires<ArgumentNullException>(debugEvent != null, "debugEvent");
             Contract.Requires<ArgumentNullException>(engine != null, "engine");
 
-            Guid guid = debugEvent.EventGuid;
-            enum_EVENTATTRIBUTES attributes = debugEvent.Attributes;
-            return callback.Event(engine, process, program, thread, debugEvent, ref guid, (uint)attributes);
+            return callback.Event(engine, process, program, thread, debugEvent, debugEvent.EventGuid, (uint)debugEvent.Attributes);
         }
     }
 }
