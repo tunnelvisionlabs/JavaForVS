@@ -18,6 +18,7 @@ LICENSE text
 *.cpp text
 *.filters text
 *.h text
+*.def text
 *.vcxproj text
 
 # Java projects and source files
@@ -25,14 +26,23 @@ LICENSE text
 *.java text
 
 # Other source files
+*.g3 text
+*.g4 text
 *.config text
+*.datasource text
 *.nuspec text
 *.vsixmanifest text
 *.vstemplate text
+*.xsd text
+*.svcinfo text
+*.svcmap text
+*.wsdl text
+
 
 # Solutions
 *.sln text
 *.targets text
+*.props text
 
 # MS office and other "productivity" binary files
 *.xlsx binary
