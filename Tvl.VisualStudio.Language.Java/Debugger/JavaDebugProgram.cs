@@ -1003,7 +1003,7 @@
             else
             {
                 string message = exceptionEvent.GetDescription() + Environment.NewLine;
-                DebugEvent debugEvent = new DebugOutputStringEvent(GetAttributesForEvent(e), message);
+                DebugEvent debugEvent = new DebugOutputStringEvent(message);
                 SetEventProperties(debugEvent, e, true);
                 Callback.Event(DebugEngine, Process, this, thread, debugEvent);
 
@@ -1098,7 +1098,7 @@
             // The format of the message created by the .NET debugger is this:
             // 'devenv.exe' (Managed (v4.0.30319)): Loaded 'C:\Windows\Microsoft.Net\assembly\GAC_MSIL\Microsoft.VisualStudio.Windows.Forms\v4.0_10.0.0.0__b03f5f7f11d50a3a\Microsoft.VisualStudio.Windows.Forms.dll'
             string message = string.Format("'{0}' ({1}): Loaded '{2}'\n", Process.GetName(enum_GETNAME_TYPE.GN_BASENAME), Java.Constants.JavaLanguageName, e.Type.GetName());
-            DebugEvent outputEvent = new DebugOutputStringEvent(GetAttributesForEvent(e), message);
+            DebugEvent outputEvent = new DebugOutputStringEvent(message);
             SetEventProperties(outputEvent, e, true);
             Callback.Event(DebugEngine, Process, this, thread, outputEvent);
 
