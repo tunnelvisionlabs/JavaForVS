@@ -72,23 +72,21 @@
             bool allow64bit = Platform.Equals("X64", StringComparison.OrdinalIgnoreCase) || Platform.Equals("AnyCPU", StringComparison.OrdinalIgnoreCase);
             bool allow32bit = Platform.Equals("X86", StringComparison.OrdinalIgnoreCase) || Platform.Equals("AnyCPU", StringComparison.OrdinalIgnoreCase);
 
-            string softwareRegKey64 = Environment.Is64BitOperatingSystem ? @"SOFTWARE\" : null;
-            string softwareRegKey32 = Environment.Is64BitOperatingSystem ? @"SOFTWARE\Wow6432Node\" : @"SOFTWARE\";
-
+            string softwareRegKey = @"SOFTWARE\";
             string installation = developmentKit ? "Java Development Kit" : "Java Runtime Environment";
 
-            if (allow64bit && softwareRegKey64 != null)
+            if (allow64bit)
             {
-                string registryRoot = softwareRegKey64 + JvmRegistryBase + @"\" + installation;
-                string path = FindJavaPath(registryRoot, fileName);
+                string registryRoot = softwareRegKey + JvmRegistryBase + @"\" + installation;
+                string path = FindJavaPath(RegistryView.Registry64, registryRoot, fileName);
                 if (!string.IsNullOrEmpty(path))
                     return path;
             }
 
             if (allow32bit)
             {
-                string registryRoot = softwareRegKey32 + JvmRegistryBase + @"\" + installation;
-                string path = FindJavaPath(registryRoot, fileName);
+                string registryRoot = softwareRegKey + JvmRegistryBase + @"\" + installation;
+                string path = FindJavaPath(RegistryView.Registry32, registryRoot, fileName);
                 if (!string.IsNullOrEmpty(path))
                     return path;
             }
@@ -96,11 +94,12 @@
             return null;
         }
 
-        private static string FindJavaPath(string registryRoot, string fileName)
+        private static string FindJavaPath(RegistryView view, string registryRoot, string fileName)
         {
             try
             {
-                using (RegistryKey jdk = Registry.LocalMachine.OpenSubKey(registryRoot, RegistryKeyPermissionCheck.ReadSubTree))
+                using (RegistryKey baseKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, view))
+                using (RegistryKey jdk = baseKey.OpenSubKey(registryRoot, RegistryKeyPermissionCheck.ReadSubTree))
                 {
                     if (jdk == null)
                         return null;
