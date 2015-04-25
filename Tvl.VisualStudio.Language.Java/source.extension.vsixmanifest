@@ -3,7 +3,7 @@
   <Identifier Id="Tvl.VisualStudio.Language.Java.1852bf6a-fde2-4268-9e3e-dce34312bfe3">
     <Name>Java Language Support</Name>
     <Author>Sam Harwell</Author>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Description xml:space="preserve">Basic support for the Java programming language.</Description>
     <Locale>1033</Locale>
     <License>Eula.rtf</License>
@@ -44,6 +44,6 @@
     <VsPackage>|%CurrentProject%|</VsPackage>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>
     <ItemTemplate>ItemTemplates</ItemTemplate>
-    <CustomExtension Type="Tvl.Java.1.2.0.nupkg">packages/Tvl.Java.1.2.0.nupkg</CustomExtension>
+    <CustomExtension Type="Tvl.Java.1.2.1-dev.nupkg">packages/Tvl.Java.1.2.1-dev.nupkg</CustomExtension>
   </Content>
 </Vsix>
