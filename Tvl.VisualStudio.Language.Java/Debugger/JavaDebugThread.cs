@@ -210,7 +210,7 @@ namespace Tvl.VisualStudio.Language.Java.Debugger
 
             try
             {
-                using (var result = _thread.InvokeMethod(null, _getIdMethod, InvokeOptions.None))
+                using (var result = _thread.InvokeMethod(null, _getIdMethod, InvokeOptions.SingleThreaded))
                 {
                     pdwThreadId = (uint)((ILongValue)result.Value).GetValue();
                     return VSConstants.S_OK;
@@ -242,7 +242,7 @@ namespace Tvl.VisualStudio.Language.Java.Debugger
 
             try
             {
-                using (var result = _thread.InvokeMethod(null, _getPriorityMethod, InvokeOptions.None))
+                using (var result = _thread.InvokeMethod(null, _getPriorityMethod, InvokeOptions.SingleThreaded))
                 {
                     priorityId = ((IIntegerValue)result.Value).GetValue();
                     return VSConstants.S_OK;
