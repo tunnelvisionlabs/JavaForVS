@@ -1,6 +1,8 @@
 ﻿namespace Tvl.VisualStudio.Shell
 {
     using System;
+    using System.Collections.Generic;
+    using System.Text;
     using Microsoft.VisualStudio;
     using Microsoft.VisualStudio.Shell.Interop;
     using Marshal = System.Runtime.InteropServices.Marshal;
@@ -35,7 +37,7 @@
                 {
                     vstargets[i].bstrArg = targets[i].Arguments;
                     vstargets[i].bstrCurDir = targets[i].CurrentDirectory;
-                    vstargets[i].bstrEnv = targets[i].Environment;
+                    vstargets[i].bstrEnv = GetEnvironmentString(targets[i].Environment);
                     vstargets[i].bstrExe = targets[i].Executable;
                     vstargets[i].bstrOptions = targets[i].Options;
                     vstargets[i].bstrPortName = targets[i].PortName;
@@ -72,6 +74,24 @@
                         Marshal.FreeHGlobal(vstargets[i].pDebugEngines);
                 }
             }
+        }
+
+        private static string GetEnvironmentString(Dictionary<string, string> dictionary)
+        {
+            if (dictionary == null || dictionary.Count == 0)
+                return null;
+
+            StringBuilder builder = new StringBuilder();
+            foreach (var pair in dictionary)
+            {
+                builder.Append(pair.Key);
+                builder.Append('=');
+                builder.Append(pair.Value);
+                builder.Append('\0');
+            }
+
+            builder.Append('\0');
+            return builder.ToString();
         }
 
         public static int LaunchDebugTargets(this IVsDebugger2 debugger, params VsDebugTargetInfo2[] targets)
