@@ -24,7 +24,7 @@
   </WizardExtension>
   <WizardData>
     <packages repository="extension" repositoryId="Tvl.VisualStudio.Language.Java.1852bf6a-fde2-4268-9e3e-dce34312bfe3">
-      <package id="Tvl.Java" version="1.2.0-dev" />
+      <package id="Tvl.Java" version="1.2.0" />
     </packages>
   </WizardData>
 </VSTemplate>

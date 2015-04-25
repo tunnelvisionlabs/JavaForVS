@@ -44,6 +44,6 @@
     <VsPackage>|%CurrentProject%|</VsPackage>
     <ProjectTemplate>ProjectTemplates</ProjectTemplate>
     <ItemTemplate>ItemTemplates</ItemTemplate>
-    <CustomExtension Type="Tvl.Java.1.2.0-dev.nupkg">packages/Tvl.Java.1.2.0-dev.nupkg</CustomExtension>
+    <CustomExtension Type="Tvl.Java.1.2.0.nupkg">packages/Tvl.Java.1.2.0.nupkg</CustomExtension>
   </Content>
 </Vsix>
