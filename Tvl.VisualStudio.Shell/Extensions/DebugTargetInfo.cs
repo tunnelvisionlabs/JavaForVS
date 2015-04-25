@@ -1,11 +1,18 @@
 ﻿namespace Tvl.VisualStudio.Shell
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using Microsoft.VisualStudio.Shell.Interop;
 
     public sealed class DebugTargetInfo
     {
+        /// <summary>
+        /// This is the backing field for the <see cref="Environment"/> property.
+        /// </summary>
+        private readonly Dictionary<string, string> _environment =
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
         public string Arguments
         {
             get;
@@ -18,10 +25,15 @@
             set;
         }
 
-        public string Environment
+        /// <summary>
+        /// Gets a collection of environment variables to set for the debug process.
+        /// </summary>
+        public Dictionary<string, string> Environment
         {
-            get;
-            set;
+            get
+            {
+                return _environment;
+            }
         }
 
         public string Executable
