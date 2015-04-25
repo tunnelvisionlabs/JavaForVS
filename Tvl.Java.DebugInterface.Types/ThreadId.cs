@@ -62,5 +62,10 @@
         {
             return Handle.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return string.Format("Thread #{0}", Handle);
+        }
     }
 }
