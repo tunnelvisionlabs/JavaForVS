@@ -125,7 +125,7 @@
                 if (!CreateManifest)
                     flags += 'M';
 
-                if (Manifest != null && Manifest.Length == 0 && Manifest[0].ItemSpec != null)
+                if (Manifest != null && Manifest.Length != 0 && Manifest[0].ItemSpec != null)
                     flags += 'm';
             }
 
@@ -136,7 +136,7 @@
 
             if (command == JarCommand.Create || command == JarCommand.Update)
             {
-                if (Manifest != null && Manifest.Length == 0 && Manifest[0].ItemSpec != null)
+                if (Manifest != null && Manifest.Length != 0 && Manifest[0].ItemSpec != null)
                     commandLine.AppendFileNameIfNotNull(Manifest[0]);
             }
 
